@@ -1,1 +1,14 @@
-<p>home-feature-card works!</p>
+<!-- Carte de fonctionnalité -->
+
+<!--    Interpolation avec la propriété title, à la ligne 3.
+        Liaison entre la propriété icon et la source de l’image à la ligne 5.
+        Interpolation avec la propriété description, à la ligne 8. -->
+<div class="card mb-3">
+    <h3 class="card-header text-center">{{ title }}</h3>
+    <div class="card-body">
+     <img [src]="icon" class="w-25 img-fluid mx-auto d-block"/>
+    </div>
+    <ul class="list-group list-group-flush">
+     <li class="list-group-item text-center">{{ description }}</li>
+    </ul>
+   </div>

@@ -1,5 +1,6 @@
+// style du composant de bannière
 .jumbotron {
     background-image: url('../../../../assets/img/home-banner.jpg');
-    background-size: cover;
+    background-size: cover; // prend toute la surface du cpt sans déformer l’image.
     min-height: 380px;
    }

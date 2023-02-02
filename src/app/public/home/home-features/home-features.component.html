@@ -1,1 +1,16 @@
-<p>home-features works!</p>
+<!--
+Composant smart <=> Composant dumb
+[title]= »monTitre » <=> @Input() title: string;
+
+A gauche, on passe la donnée depuis le composant smart, et à droite on la récupère dans le composant dumb grâce à l’annotation @Input.
+C’est comme ça que l’on fait le lien entre les deux composants pour les propriétés title, description et icon. -->
+<div class="container">
+    <div class="row">
+      <al-home-feature-card *ngFor="let feature of features"
+        class="col-md-4"
+        [title]="feature.title"
+        [description]="feature.description"
+        [icon]="feature.icon">
+      </al-home-feature-card>
+    </div>
+   </div>
