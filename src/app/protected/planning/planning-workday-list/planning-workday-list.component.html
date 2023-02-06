@@ -1,0 +1,30 @@
+<!-- Plutôt que de passer l’objet workday comme ci-dessous, nous allons passer chaque propriété d'entrée depuis le composant parent puis,
+    interagir avec celles-ci depuis le composant fils (dumb). -->
+    <!-- Ligne 11 entre parenthèses, on met le nom de la propriété de sortie que l’on souhaite intercepter (ici, workdayRemoved)
+      On définit la méthode onWorkdayRemoved dans le composant parent, qui sera chargé d’intercepter les évènements émis par le composant fils. -->
+ <div class="row">
+    <al-planning-workday-item 
+      *ngFor="let workday of workdays$ | async"
+      [dueDate]="workday.dueDate"
+      [doneTasks]="workday.doneTasks"
+      [remainingTasks]="workday.remainingTasks"
+      (workdayRemoved)="onWorkdayRemoved($event)"
+      class="col-md-4">
+    </al-planning-workday-item>
+</div>
+
+
+
+<!-- ANCIENNE METHODE
+Ligne 19 : on utilise le composant dumb afin de déléguer la logique d’affichage d’une journée de travail.
+Ligne 20 : on applique le pipe async pour pouvoir itérer sur les valeurs émises par l’observable workdays$.
+            => On récupère chaque journée de travail émise par cet observable dans une variable workday.
+Ligne 21 :  on passe cette variable workday comme propriété d’entrée du composant planning-workday-item. -->
+
+<!-- <div class="row">
+    <al-planning-workday-item 
+      *ngFor="let workday of workdays$ | async"
+      [workday]="workday"
+      class="col-md-4">
+    </al-planning-workday-item>
+   </div> -->
