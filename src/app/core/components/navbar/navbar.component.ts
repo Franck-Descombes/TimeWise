@@ -17,7 +17,7 @@ export class NavbarComponent {
   ngOnInit() { }
 
   public isActive(page: string): boolean {
-    return this.router.isActive(page, { paths: 'exact', queryParams: 'exact', fragment: 'ignored', matrixParams: 'ignored' });  // Angular 12 ou >
+    return this.router.isActive(page, { paths: 'exact', queryParams: 'exact', fragment: 'ignored', matrixParams: 'ignored' });
     return this.router.isActive(page, true);  // Angular 11 ou < 
   }
 
