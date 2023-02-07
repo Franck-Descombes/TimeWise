@@ -9,11 +9,11 @@ import { CoreModule } from './core/core.module';
   declarations: [
     AppComponent
   ],
-  imports: [
-    BrowserModule,
-    AppRoutingModule,
-    CoreModule,
-  ],
+  imports: [ // C’est dans ce tableau que l’on importe les routes de notre application :
+  BrowserModule,
+  CoreModule, // On importe d’abord nos “vraies” routes...
+  AppRoutingModule // et ensuite la route générique en dernier !
+ ],
   providers: [],
   bootstrap: [AppComponent]
 })

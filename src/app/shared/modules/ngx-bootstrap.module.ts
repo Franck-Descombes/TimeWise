@@ -6,7 +6,7 @@ import { BsDropdownModule } from 'ngx-bootstrap/dropdown';
 import { ModalModule } from 'ngx-bootstrap/modal';
 import { PopoverModule } from 'ngx-bootstrap/popover';
 
-/* Série de modules (fournis par la librairie NgxBootstrap) importés au même endroit, nous les réexportons ensuite :
+/* Série de modules (from NgxBootstrap) importés au même endroit, nous les réexportons ensuite :
 AlertModule : Permet d’afficher des messages de confirmation, d’avertissement ou d’erreur à l’utilisateur, en fonction de ses interactions avec l’application.
 BsDatepickerModule : Permet de sélectionner facilement une date au sein d’un petit calendrier.
 BsDropdownModule : Permet d’implémenter rapidement des menus déroulants.
