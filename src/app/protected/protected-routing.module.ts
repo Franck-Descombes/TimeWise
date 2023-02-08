@@ -5,11 +5,13 @@ import { ParametersComponent } from './parameters/parameters/parameters.componen
 import { PlanningComponent } from './planning/planning/planning.component';
 import { ProfilComponent } from './profil/profil/profil.component';
 import { WorkdayComponent } from './workday/workday/workday.component';
+import { ProtectedComponent } from './protected.component';
 
 const routes: Routes = [
   {
-    path: 'app', // prefix for app routes
-    children: [
+    path: 'app', // Prefix for app routes
+    component: ProtectedComponent, // Declare le composant structure comme le parent de ttes les routes de l'espace membre. 
+    children: [ // Daughter classes...
       { path: 'dashboard', component: DashboardComponent },
       { path: 'parameters', component: ParametersComponent },
       { path: 'planning', component: PlanningComponent },
