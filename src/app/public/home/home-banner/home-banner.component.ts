@@ -8,11 +8,11 @@ import { Router } from '@angular/router';
 })
 export class HomeBannerComponent {
 
-  loginPath: string = 'login';
+  // loginPath: string = 'login';
 
   constructor(private router: Router) { }
 
-  public navigate(page: string): void {
-    this.router.navigate([page]);
+  navigateToLogin(): void {
+    this.router.navigate(['login']);
   }
 }

@@ -1,22 +1,32 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
-import { DashboardComponent } from './dashboard/dashboard/dashboard.component';
-import { ParametersComponent } from './parameters/parameters/parameters.component';
-import { PlanningComponent } from './planning/planning/planning.component';
-import { ProfilComponent } from './profil/profil/profil.component';
-import { WorkdayComponent } from './workday/workday/workday.component';
 import { ProtectedComponent } from './protected.component';
 
 const routes: Routes = [
   {
     path: 'app', // Prefix for app routes
-    component: ProtectedComponent, // Declare le composant structure comme le parent de ttes les routes de l'espace membre. 
-    children: [ // Daughter classes...
-      { path: 'dashboard', component: DashboardComponent },
-      { path: 'parameters', component: ParametersComponent },
-      { path: 'planning', component: PlanningComponent },
-      { path: 'profil', component: ProfilComponent },
-      { path: 'workday', component: WorkdayComponent },
+    component: ProtectedComponent, // Declare ProtectedComponent comme le parent de toutes les routes de l'espace membre. 
+    children: [ // Classes filles...
+      {
+        path: 'dashboard',
+        loadChildren: () => import('./dashboard/dashboard.module').then(m => m.DashboardModule)
+      },
+      {
+        path: 'parameters',
+        loadChildren: () => import('./parameters/parameters.module').then(m => m.ParametersModule)
+      },
+      {
+        path: 'planning',
+        loadChildren: () => import('./planning/planning.module').then(m => m.PlanningModule)
+      },
+      {
+        path: 'profil',
+        loadChildren: () => import('./profil/profil.module').then(m => m.ProfilModule)
+      },
+      {
+        path: 'workday',
+        loadChildren: () => import('./workday/workday.module').then(m => m.WorkdayModule)
+      },
     ]
   }
 ];
