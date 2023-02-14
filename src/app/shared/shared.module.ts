@@ -2,6 +2,7 @@ import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { NgxBootstrapModule } from './modules/ngx-bootstrap.module';
 import { SidenavComponent } from './components/sidenav/sidenav.component';
+import { ReactiveFormsModule } from '@angular/forms'; // Dédié à l’implémentation des formulaires
 
 /* ce module sert à factoriser les importations communes des autres modules.
 exemple : ajouter des formulaires dans plusieurs modules différents nous obligera à importer le module natif ReactiveFormsModule à chaque fois.
@@ -15,12 +16,14 @@ Grâce à la factorisation, il suffira d’importer une seule fois le ReactiveFo
   ],
   imports: [
     CommonModule,
-    NgxBootstrapModule
+    NgxBootstrapModule,
+    ReactiveFormsModule
   ],
   exports: [
     CommonModule,
     NgxBootstrapModule,
-    SidenavComponent
+    SidenavComponent,
+    ReactiveFormsModule
   ]
 })
 export class SharedModule { }
