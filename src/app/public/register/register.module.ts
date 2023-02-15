@@ -11,7 +11,7 @@ import { RegisterFormComponent } from './register-form/register-form.component';
   ],
   imports: [
     SharedModule,
-    RegisterRoutingModule // nous chargeons ce module en lazy.
+    RegisterRoutingModule // ajout du module en lazy loading.
   ]
 })
 export class RegisterModule { }

@@ -1,0 +1,51 @@
+<!-- L’attribut novalidate permet d’éviter le comportement par défaut de certains navigateurs, concernant la validation des champs. 
+    On lie la méthode de soumission du formulaire avec l’événement ngSubmit -->
+<form novalidate class="card-body" [formGroup]="loginForm" (ngSubmit)="submit()">
+
+    <!-- Champ de l’adresse email
+    Grâce à la directive formControlName, on peut brancher nos balises input avec les champs de notre formulaire réactif, déclaré dans la classe de notre composant.
+    Affiche msg adaptés aux potentielles erreurs : on utilise les  prop. errors & dirty de l’objet FormControl qui permet de modéliser les champs du form. -->
+    <div class="form-group">
+        <label for="email">Email</label>
+        <input id="email" type="email" Required formControlName="email" class="form-control" placeholder="Votre email"
+            autocorrect="off" autocomplete="off" />
+        <small *ngIf="email && email.errors && email.dirty" class="form-text text-muted">
+            <span [hidden]="!email.errors['required']">
+                Email requis.
+            </span>
+            <span [hidden]="!email.errors['email']">
+                Entrez une adresse email correcte.
+            </span>
+        </small>
+    </div>
+
+    <!-- Champ du mot de passe -->
+    <div class="form-group">
+        <label for="password">Password</label>
+        <input id="password" type="password" Required formControlName="password" class="form-control"
+            placeholder="Votre mot de passe" />
+        <small *ngIf="password && password.errors && password.dirty" class="form-text text-muted">
+            <span [hidden]="!password.errors['required']">
+                Mot de passe requis.
+            </span>
+            <span [hidden]="!password.errors['minlength']">
+                Le mot de passe doit faire plus de 6 caractères.
+            </span>
+            <span [hidden]="!password.errors['maxlength']">
+                Le mot de passe doit faire moins de 20 caractères.
+            </span>
+            <!-- <span [hidden]="!password.errors['pattern']">
+                Min. 8 caractères dont au moins 1 majuscule, 1 minuscule, 1 chiffre et 1 caractère spécial.
+            </span> -->
+        </small>
+    </div>
+
+    <!-- Bouton de soumission du formulaire -->
+    <!-- Btn de validation gris/vert, selon l’état de validité du formulaire grâce à la directive ngClass -->
+    <p class="text-center py-3">
+        <button type="submit" [disabled]="!loginForm.valid" class="btn"
+            [ngClass]="{'btn-success' : loginForm.valid, 'btn-default' : !loginForm.valid}">
+            Connexion <i class="material-icons align-middle">arrow_right_alt</i>
+        </button>
+    </p>
+</form>

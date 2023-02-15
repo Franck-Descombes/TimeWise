@@ -1,5 +1,4 @@
-/* FormGroup permet de regrouper des instances de FormControl, qui représente un champ du formulaire.
-FormGroup permet donc de déclarer un formulaire réactif.
+/* FormGroup permet de regrouper des instances de FormControl, qui représente un champ du formulaire. FormGroup permet donc de déclarer un formulaire réactif.
 FormBuilder permet de déclarer des formulaires avec une syntaxe moins verbeuse.
 Validators fournit une série de validateurs prédéfinis afin de vérifier les données saisies par l’utilisateur. */
 import { Component, OnInit } from '@angular/core';
@@ -21,6 +20,7 @@ export class RegisterFormComponent implements OnInit {
 
   ngOnInit() { // sur FormBuilder, on appelle la méthode group() qui permet d’instancier un nouveau FormGroup.
     this.registerForm = this.fb.group({
+      // Validators.<regle_de_validation> <==> <nom_du_champs>.errors.<regle_de_validation>
       'name': ['', [
         Validators.required,
         Validators.minLength(4),
@@ -46,7 +46,7 @@ export class RegisterFormComponent implements OnInit {
   // La prop value est disponible sur tous les objets FormControl & les instances de FormGroup.
   // accéder à toutes les valeurs du formulaire : this.registerForm.value 
 
-  submit() {
+  submit(): void {
     console.info(this.name?.value);
     console.info(this.email?.value);
     console.info(this.password?.value);

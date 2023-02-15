@@ -4,7 +4,6 @@
  (ngSubmit)="submit()" 
  class="card-body"
 >
-  
  <!-- Le champ du nom de l‘utilisateur -->
  <div class="form-group">
   <label for="name">Name</label>
@@ -17,23 +16,23 @@
    autocorrect="off"
    autocomplete="off"
   />
-   <!-- On ajoute tous les messages d’erreurs potentiels : -->
+   <!-- On ajoute tous les messages d’erreurs potentiels -->
  <small *ngIf="name && name.errors && name.dirty" class="form-text text-muted">
-    <span [hidden]="!name.errors['.required']">
+    <span [hidden]="!name.errors['required']">
      Nom requis.
     </span>
-    <span [hidden]="!name.errors['.minlength']">
+    <span [hidden]="!name.errors['minlength']">
      Le nom doit faire plus de 4 caractères.
     </span>
-    <span [hidden]="!name.errors['.maxlength']">
+    <span [hidden]="!name.errors['maxlength']">
      Le nom doit faire moins de 20 caractères.
     </span>
-    <span [hidden]="!name.errors['.pattern']">
+    <span [hidden]="!name.errors['pattern']">
      Le nom ne doit contenir que des lettres, des chiffres, '-' ou '_'.
     </span>
    </small>
 </div>
- <!--Champ de l’adresse email. -->
+ <!--Champ de l’adresse email -->
  <div class="form-group">
     <label for="email">Email</label>
     <input
@@ -46,10 +45,10 @@
      autocomplete="off"
     />
     <small *ngIf="email && email.errors && email.dirty" class="form-text text-muted">
-        <span [hidden]="!email.errors['.required']">
+        <span [hidden]="!email.errors['required']">
          Email requis.
         </span>
-        <span [hidden]="!email.errors['.email']">
+        <span [hidden]="!email.errors['email']">
          Entrez une adresse email valide.
         </span>
        </small>
@@ -68,20 +67,20 @@
     />
     <small
     *ngIf="password && password.errors && password.dirty"
-    class="form-text text-muted"
-   >
-    <span [hidden]="!password.errors['.required']">
+    class="form-text text-muted">
+    <span [hidden]="!password.errors['required']">
      Mot de passe requis.
     </span>
-    <span [hidden]="!password.errors['.minlength']">
+    <span [hidden]="!password.errors['minlength']">
      Le mot de passe doit faire plus de 6 caractères.
     </span>
-    <span [hidden]="!password.errors['.maxlength']">
+    <span [hidden]="!password.errors['maxlength']">
      Le mot de passe doit faire moins de 20 caractères.
     </span>
    </small>
   </div>
-<!-- Bouton pour soumettre le formulaire. La propriété disabled est liée à l’état de validité du formulaire.-->
+<!-- Bouton pour soumettre le formulaire.
+La propriété disabled est liée à l’état de validité du formulaire.-->
 <p class="text-center py-3">
     <button
      type="submit"
