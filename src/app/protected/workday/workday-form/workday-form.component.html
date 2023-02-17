@@ -1,5 +1,21 @@
-<form>
-    <al-workday-form-date></al-workday-form-date>
-    <al-workday-form-tasks></al-workday-form-tasks>
+<!-- on 'branche' le formulaire réactif sur la balise form, ainsi que le bouton submit de soumission du formulaire. -->
+<form [formGroup]="workdayForm">
+
+    <!-- step 1 : liaison de donnée sur la prop. dueDate; à laquelle on passe le champ de la date d’une journée de travail, grâce au getter du même nom, dueDate -->
+    <al-workday-form-date [dueDate]="dueDate"></al-workday-form-date>
+
+    <!-- Liaisons de propriétés workdayForm et tasks.
+        BUG : lorsqu’on essaye d’isoler une instance de FormArray dans un template à part, il faut que l’instance globale du formulaire soit déclarée dans le même template que le FormArray qui l’utilise.
+        ==> Donc on passe aussi le formulaire en entier au fils, afin de ne pas lever d’erreur. -->
+    <al-workday-form-tasks [workdayForm]="workdayForm" [tasks]="tasks"></al-workday-form-tasks>
+
     <al-workday-form-notes></al-workday-form-notes>
+
+    <div class="text-right">
+        <button (click)="submit()" type="submit" class="btn btn-success btn-lg" [disabled]="workdayForm.invalid">
+            Sauvegarder
+        </button>
+    </div>
 </form>
+
+{{ workdayForm.value | json }}

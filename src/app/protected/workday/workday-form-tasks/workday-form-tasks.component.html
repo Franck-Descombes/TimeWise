@@ -1,1 +1,25 @@
-<p>workday-form-tasks works!</p>
+<!-- Normalement cette liaison de propriété formGroup ne devrait être faite que dans le composant du formulaire principal WorkdayForm.
+    Mais cela permet de fixer une erreur qui apparaîtrait dans la console du navigateur.  -->
+<div [formGroup]="workdayForm">
+    <div formArrayName="tasks">
+        <!-- Itération sur les instances de FormGroup représentant des tâches -->
+        <!-- Au sein-même de la boucle, on intercepte la valeur index fournie par NgFor et on l’assigne à une variable nommée « i ».
+             Ensuite, on peut passer cette variable à la liaison de propriété ( [index]="i" ) -->
+      <al-workday-form-tasks-item
+        *ngFor="let task of taskControlList;
+        index as i;
+        first as isFirst;
+        last as isLast;"
+        [index]="i"
+        [isFirst]="isFirst"
+        [isLast]="isLast"
+        [task]="task"
+        (removedTask)="onRemovedTask($event)">
+      </al-workday-form-tasks-item>
+    </div>
+    <!-- btn d’ajout d’une tâche : -->
+    <div class="text-center mt-5">
+        <al-workday-form-tasks-add (addedTask)="onAddedTask()">
+        </al-workday-form-tasks-add>
+    </div>
+</div>

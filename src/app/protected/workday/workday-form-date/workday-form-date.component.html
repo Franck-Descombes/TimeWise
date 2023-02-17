@@ -1,1 +1,17 @@
-<p>workday-form-date works!</p>
+<!-- bsDatepicker (attribut from ngx-bootstrap) : transforme ce simple champ input de type texte en un datepicker complet et fonctionnel.
+     bsConfig directive from ngx-bootstrap) : personnalise des éléments (dont le format de la date attendue) => affiche la date dans un format français -->
+<div class="row mb-5">
+    <div class="col-md-6 mx-auto">
+     <div class="form-inline">
+      <div class="form-group">
+       <label class="mr-3">Date:</label>
+       <input
+        bsDatepicker
+        [formControl]="dueDate"
+        [bsConfig]="{ dateInputFormat: 'DD/MM/YYYY' }"
+        type="text"
+        class="form-control form-control-sm align-middle"/>
+       </div>
+      </div>
+    </div>
+   </div>
