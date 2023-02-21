@@ -7,9 +7,8 @@ import { Component, EventEmitter, OnInit, Output } from '@angular/core';
   ]
 })
 export class WorkdayFormTasksAddComponent implements OnInit {
-
-  // émission d’événement : addedTask
-  @Output() addedTask = new EventEmitter<void>();
+  
+  @Output() addedTask = new EventEmitter<void>(); // émission d’événement : addedTask
 
   ngOnInit(): void { }
 

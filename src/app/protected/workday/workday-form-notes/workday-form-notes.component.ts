@@ -1,4 +1,6 @@
-import { Component } from '@angular/core';
+// Composant dédié à la gestion des notes.
+import { Component, OnInit, Input } from '@angular/core';
+import { FormControl } from '@angular/forms';
 
 @Component({
   selector: 'al-workday-form-notes',
@@ -7,5 +9,10 @@ import { Component } from '@angular/core';
   ]
 })
 export class WorkdayFormNotesComponent {
+  @Input() notes: FormControl; // réception du champ des notes
+
+  constructor() { }
+
+  ngOnInit() { }
 
 }

@@ -1,7 +1,6 @@
 import { Component, OnInit } from '@angular/core';
-// FormArray permet de regrouper des champs de formulaire sans avoir à déterminer le nombre à l'avance.
-
-import { FormGroup, FormArray, FormBuilder, FormControl } from '@angular/forms';
+import { FormGroup, FormArray, FormBuilder, FormControl } from '@angular/forms'; // FormArray permet de regrouper des champs de formulaire sans avoir à déterminer le nombre à l'avance.
+import { Validators } from '@angular/forms';
 
 @Component({
   selector: 'al-workday-form',
@@ -24,11 +23,19 @@ export class WorkdayFormComponent implements OnInit {
   get tasks() { return this.workdayForm.get('tasks') as FormArray; }
 
   // un FormArray agrège les valeurs et l’état de validité des champs qui le composent.
+  // Validation's rules for workdays
   createWorkdayForm(): FormGroup {
     const workdayForm: FormGroup = this.fb.group({
-      'dueDate': '',
-      'tasks': this.fb.array([]),
-      'notes': '',
+      'dueDate': ['', [
+        Validators.required
+      ]],
+      'tasks': this.fb.array([], [
+        Validators.required,
+        Validators.maxLength(6)
+      ]),
+      'notes': ['', [
+        Validators.maxLength(1000)
+      ]]
     });
     return workdayForm;
   }

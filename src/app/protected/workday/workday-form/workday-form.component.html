@@ -9,7 +9,7 @@
         ==> Donc on passe aussi le formulaire en entier au fils, afin de ne pas lever d’erreur. -->
     <al-workday-form-tasks [workdayForm]="workdayForm" [tasks]="tasks"></al-workday-form-tasks>
 
-    <al-workday-form-notes></al-workday-form-notes>
+    <al-workday-form-notes [notes]="notes"></al-workday-form-notes>
 
     <div class="text-right">
         <button (click)="submit()" type="submit" class="btn btn-success btn-lg" [disabled]="workdayForm.invalid">

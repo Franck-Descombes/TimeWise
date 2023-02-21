@@ -1,1 +1,12 @@
-<p>workday-form-notes works!</p>
+<!-- fieldset crée une section à part à l’intérieur du form -->
+<fieldset class="mb-5">
+    <legend>Notes</legend>
+    <div class="form-group">
+        <label for="notes">
+            Un petit espace pour noter des idées, le ressenti de la journée, etc.
+        </label>
+        <!-- rows permet d’indiquer le nb de lignes prévues pour le bloc de texte -->
+        <textarea [formControl]="notes" class="form-control" id="notes" rows="3">
+     </textarea>
+    </div>
+</fieldset>
