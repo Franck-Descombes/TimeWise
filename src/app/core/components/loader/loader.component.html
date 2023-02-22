@@ -1,0 +1,6 @@
+<!-- pipe async => dés/abonnement automatique à l’Observable exposé par le service loader.-->
+<div *ngIf="isLoading$ | async" class="loading-overlay">
+    <div class="loading">
+        <img src="assets/img/pomodoro-loader.gif" />
+    </div>
+</div>
