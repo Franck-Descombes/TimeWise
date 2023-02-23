@@ -35,7 +35,8 @@ export class LoginFormComponent implements OnInit {
   get password() { return this.loginForm.get('password') }
 
   submit(): void {
-    // Safe Navigation Operator ('?'de TypeScript) => permet de ne pas lever d’erreur au cas où le champ est null; évite les erreurs du type « Can not call <nom de la propriété ou méthide> on undefined or null ».
+    // Safe Navigation Operator ('?'de TypeScript) => permet de ne pas lever d’erreur au cas où le champ est null.
+    // Evite les erreurs du type « Can not call <nom de la propriété ou méthide> on undefined or null ».
     console.info(this.email?.value);
     console.info(this.password?.value);
     this.router.navigate(['/app/dashboard']);

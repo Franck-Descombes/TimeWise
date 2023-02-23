@@ -7,6 +7,8 @@ import { NavbarComponent } from './components/navbar/navbar.component';
 import { FooterComponent } from './components/footer/footer.component';
 import { PageNotFoundComponent } from './components/page-not-found/page-not-found.component';
 import { LoaderComponent } from './components/loader/loader.component';
+import { ToastrComponent } from './components/toastr/toastr.component';
+import { AlertModule } from 'ngx-bootstrap/alert';
 
 
 // Les importations
@@ -15,19 +17,22 @@ import { LoaderComponent } from './components/loader/loader.component';
     NavbarComponent,
     FooterComponent,
     PageNotFoundComponent,
-    LoaderComponent
+    LoaderComponent,
+    ToastrComponent
   ],
   imports: [
     CommonModule,
     BrowserAnimationsModule,
     PublicModule,
-    ProtectedModule
+    ProtectedModule,
+    AlertModule.forRoot() // disponible au niveau du CoreModule.
   ],
   exports: [
     NavbarComponent,
     FooterComponent,
     PageNotFoundComponent,
-    LoaderComponent
+    LoaderComponent,
+    ToastrComponent
   ]
 })
 export class CoreModule {
@@ -36,4 +41,4 @@ export class CoreModule {
       throw new Error(`CoreModule is already loaded from.`);
     }
   }
- }
+}

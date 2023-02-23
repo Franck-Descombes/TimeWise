@@ -1,0 +1,16 @@
+<!--(toastr$ | async) récupère le flux qui émet soit un objet de type toastr, soit la valeur null.
+    Le mot clef as de Typescript permet de récuperer chaque valeur émise par le flux dans un objet à part, nommé toastr.
+    On peut ensuite accéder aux differentes propriétés de cet objet : category et message. -->
+
+<!--Nous utilisons 'as toastr' dans la directive *ngIf pour stocker la valeur de la notification dans la variable toastr.
+    Cette variable sera utilisée pour afficher les détails du toastr, tels que le type et le message. -->
+
+<!-- <alert> est un composant du module AlertModule (ngx-bootstrap). Déjà importé dans l'app dans le module NgxBoostrap, qui est lui-même importé dans le module Shared.
+    Pour le rendre disponible au niveau du template racine : ajouter l'import dans le module core.module.ts  -->
+
+<alert 
+    *ngIf="(toastr$ | async) as toastr"
+    (click)="closeToastr()"
+    type="{{ toastr.category }}">
+        {{ toastr.message }}
+</alert>
