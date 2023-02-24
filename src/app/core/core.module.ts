@@ -25,7 +25,7 @@ import { AlertModule } from 'ngx-bootstrap/alert';
     BrowserAnimationsModule,
     PublicModule,
     ProtectedModule,
-    AlertModule.forRoot() // disponible au niveau du CoreModule.
+    AlertModule.forRoot() // disponible au niveau de ce module (CoreModule).
   ],
   exports: [
     NavbarComponent,

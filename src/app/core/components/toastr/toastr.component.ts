@@ -1,4 +1,4 @@
-import { Component, EventEmitter, OnInit, Output } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { Observable } from 'rxjs';
 import { Toastr } from 'src/app/shared/models/toastr';
 import { ToastrService } from '../../services/toastr.service'; // On réutilise le modèle Toastr

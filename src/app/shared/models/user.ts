@@ -1,11 +1,12 @@
 export class User {
-    readonly id: string|null; // id de l’utilisateur qui peut être une chaîne ou "null".
-    email: string; // email de l’utilisateur
-    name: string; // nom de l’utilisateur
+    readonly id: string|null; // id de l’utilisateur 'string' ou 'null'
+    email: string;
+    name: string;
     avatar: string; // url vers la photo de profil de l’utilisateur
     pomodoroDuration: number; // durée des pomodoros
      
-    // Opérateur “?” => indique que ns voulons un objet contenant une liste de propriétés facultatives.
+// L'opérateur "?" "opérateur de navigation sécurisée" ou "opérateur de coalescence nulle".
+// Il est utilisé pour accéder à une propriété d'un objet potentiellement null ou undefined, sans provoquer d'erreur de type "Cannot read property 'x' of null" ou "Cannot read property 'x' of undefined".
     constructor(options: {
      id?: string,
      email?: string,
@@ -20,8 +21,7 @@ export class User {
      this.pomodoroDuration = options.pomodoroDuration || 1500;
     }
     
-    // Indique à TypeScript que les rôles sont représentés par un tableau de string.
-    get roles(): string[] {
+    get roles(): string[] { // Les rôles sont représentés par un tableau de string.
      return this.email.endsWith('google.com') ? ['USER', 'EMPLOYEE'] : ['USER'];
     }
    }

@@ -15,8 +15,8 @@ export class ErrorService {
 
   constructor(private toastrService: ToastrService) { }
 
-  // Utiliser le mot-clé de secours any, qui permettra de lever des erreurs quel que soit le type du backend utilisé.
-  // Dans le cas où nous aurions le contrôle sur notre backend, nous pourrions directement appliquer le type correspondant à la place de any.
+  /* Utiliser le mot-clé de secours any, qui permettra de lever des erreurs quel que soit le type du backend utilisé.
+  Dans le cas où nous aurions le contrôle sur notre backend, nous pourrions directement appliquer le type correspondant à la place de any.*/
   handleError(error: any) {
     this.toastrService.showToastr({
       category: 'danger',

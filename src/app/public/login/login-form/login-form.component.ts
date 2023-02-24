@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { FormGroup, FormBuilder, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
+import { AuthService } from 'src/app/core/services/auth.service';
 
 @Component({
   selector: 'al-login-form',
@@ -11,7 +12,7 @@ import { Router } from '@angular/router';
 export class LoginFormComponent implements OnInit {
   loginForm: FormGroup;
 
-  constructor(private fb: FormBuilder, private router: Router) { }
+  constructor(private fb: FormBuilder, private router: Router, private authService: AuthService) { }
 
   ngOnInit() {
     // sur FormBuilder, on appelle la méthode group() qui permet d’instancier un nouveau FormGroup.
@@ -28,7 +29,7 @@ export class LoginFormComponent implements OnInit {
         // Validators.pattern('^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[#?!@$ %^&*-]).{6,}$')
       ]]
     });
-  }
+}
 
   // Déclaration des getters, qui facilitera l’accès aux champs du formulaire.
   get email() { return this.loginForm.get('email') }
