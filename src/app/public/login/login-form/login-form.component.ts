@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { FormGroup, FormBuilder, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
+import { BehaviorSubject } from 'rxjs';
 import { AuthService } from 'src/app/core/services/auth.service';
 
 @Component({
@@ -29,15 +30,13 @@ export class LoginFormComponent implements OnInit {
         // Validators.pattern('^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[#?!@$ %^&*-]).{6,}$')
       ]]
     });
-}
+  }
 
   // Déclaration des getters, qui facilitera l’accès aux champs du formulaire.
   get email() { return this.loginForm.get('email') }
   get password() { return this.loginForm.get('password') }
 
   submit(): void {
-    // Safe Navigation Operator ('?'de TypeScript) => permet de ne pas lever d’erreur au cas où le champ est null.
-    // Evite les erreurs du type « Can not call <nom de la propriété ou méthide> on undefined or null ».
     console.info(this.email?.value);
     console.info(this.password?.value);
     this.router.navigate(['/app/dashboard']);

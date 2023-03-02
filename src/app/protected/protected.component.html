@@ -1,12 +1,15 @@
-<!-- Définition de la structure de l'espace membre.
-La directive du routeur d’Angular <router-outlet> permet d’injecter le contenu des pages filles à l’intérieur  -->
+<!-- Définition de la structure de l'espace membre. -->
 <div class="container-fluid">
     <div class="row sidenav">
-     <div class="col-md-3 card px-0">
-      <al-sidenav></al-sidenav>
-     </div>
-     <div class="offset-md-1 col-md-7 mt-5">
-      <router-outlet></router-outlet>
-     </div>
+        <!-- *ngIf : affichage conditionné de la barre latérale  -->
+        <div *ngIf="!isSidenavCollapsed" class="col-md-3 card px-0">
+            <al-sidenav></al-sidenav>
+        </div>
+        <!-- ngClass : ajuster la largeur de l'espace membre en fonction de l’état de la side nav (!isSidenavCollaped ou isSidenavCollaped)   -->
+        <div class="mt-5" [ngClass]="{'col-md-7 offset-md-1': !isSidenavCollapsed,
+                         'col-md-9 mx-auto': isSidenavCollapsed}">
+            <!-- La directive du routeur d’Angular <router-outlet> permet d’injecter le contenu des pages filles à l’intérieur  -->
+            <router-outlet></router-outlet>
+        </div>
     </div>
-   </div>
+</div>

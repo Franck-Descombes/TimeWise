@@ -1,15 +1,15 @@
-import { NgModule, Optional, SkipSelf } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { PublicModule } from '../public/public.module';
-import { ProtectedModule } from '../protected/protected.module';
+import { NgModule, Optional, SkipSelf } from '@angular/core';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
-import { NavbarComponent } from './components/navbar/navbar.component';
-import { FooterComponent } from './components/footer/footer.component';
-import { PageNotFoundComponent } from './components/page-not-found/page-not-found.component';
-import { LoaderComponent } from './components/loader/loader.component';
-import { ToastrComponent } from './components/toastr/toastr.component';
 import { AlertModule } from 'ngx-bootstrap/alert';
-
+import { ProtectedModule } from '../protected/protected.module';
+import { PublicModule } from '../public/public.module';
+import { FooterComponent } from './components/footer/footer.component';
+import { LoaderComponent } from './components/loader/loader.component';
+import { NavbarComponent } from './components/navbar/navbar.component';
+import { PageNotFoundComponent } from './components/page-not-found/page-not-found.component';
+import { ToastrComponent } from './components/toastr/toastr.component';
+import { HttpClientModule } from '@angular/common/http';
 
 // Les importations
 @NgModule({
@@ -18,14 +18,15 @@ import { AlertModule } from 'ngx-bootstrap/alert';
     FooterComponent,
     PageNotFoundComponent,
     LoaderComponent,
-    ToastrComponent
+    ToastrComponent,
   ],
   imports: [
     CommonModule,
+    HttpClientModule,
     BrowserAnimationsModule,
     PublicModule,
     ProtectedModule,
-    AlertModule.forRoot() // disponible au niveau de ce module (CoreModule).
+    AlertModule.forRoot(), // disponible au niveau de ce module (CoreModule).
   ],
   exports: [
     NavbarComponent,

@@ -1,20 +1,28 @@
 <nav class="navbar navbar-expand navbar-light bg-light">
-    <div class="container">
-     <a class="navbar-brand">Beautiful List</a> 
-      <div class="collapse navbar-collapse">
-       <ul class="navbar-nav mr-auto">
+  <!-- menu hamburger -->
+  <a *ngIf="user" (click)="toggleSidenav()" class="nav-link text-left">
+    <i class="material-icons align-middle">menu</i>
+  </a>
+  <div class="container">
+    <!-- Nom de l'app -->
+    <a class="navbar-brand">Beautiful List</a>
+    <div class="collapse navbar-collapse">
+      <ul class="navbar-nav mr-auto">
         <li [class.active]="isActive(homePath)" class="nav-item">
-         <a (click)="navigate(homePath)" class="nav-link">Accueil</a>
+          <!-- Accueil -->
+          <a (click)="navigate(homePath)" class="nav-link">Accueil</a>
         </li>
-       </ul>
-       <ul class="navbar-nav ml-auto">
+      </ul>
+      <ul class="navbar-nav ml-auto">
         <li class="nav-item" [class.active]="isActive(loginPath)">
-         <a (click)="navigate(loginPath)" class="nav-link">Connexion</a>
+          <!-- Connexion -->
+          <a (click)="navigate(loginPath)" class="nav-link">Connexion</a>
         </li>
         <li class="nav-item" [class.active]="isActive(registerPath)">
-         <a (click)="navigate(registerPath)" class="nav-link">Inscription</a>
+          <!-- Inscription -->
+          <a (click)="navigate(registerPath)" class="nav-link">Inscription</a>
         </li>
-       </ul>
-      </div>
+      </ul>
     </div>
-   </nav>
+  </div>
+</nav>

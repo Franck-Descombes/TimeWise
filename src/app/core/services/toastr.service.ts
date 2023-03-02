@@ -16,8 +16,9 @@ export class ToastrService {
 
   constructor() { }
 
-  // Agit sur le flux (toastr$) exposé par le service avec 'timer' (crée un nouveau flux à partir de certains paramètres) & take (modifie un flux déjà existant en le raccourcissant un peu).
-  // showToastr va modifier l’état du service de manière à afficher un toastr mais 3s plus tard, l’état du service sera redéfini à null, le toastr sera donc masqué.
+  // showToastr modifie l’état du service de manière à afficher un toastr mais 3s plus tard, l’état du service sera redéfini à null, le toastr sera donc masqué.
+  // 'timer' crée un nouveau flux à partir de certains paramètres.
+  // 'take' modifie un flux déjà existant en le raccourcissant un peu.
   showToastr(toastr: Toastr): void {
     timer(0, 3000).pipe(take(2)).subscribe(i => {
       if (i === 0) {

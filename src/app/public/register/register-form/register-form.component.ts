@@ -2,55 +2,71 @@
 FormBuilder permet de déclarer des formulaires avec une syntaxe moins verbeuse.
 Validators fournit une série de validateurs prédéfinis afin de vérifier les données saisies par l’utilisateur. */
 import { Component, OnInit } from '@angular/core';
+import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
-import { FormGroup, FormBuilder, Validators } from '@angular/forms';
+import { AuthService } from 'src/app/core/services/auth.service';
 
 @Component({
   selector: 'al-register-form',
   templateUrl: './register-form.component.html',
-  styles: []
+  styles: [],
 })
 export class RegisterFormComponent implements OnInit {
-
   registerForm: FormGroup; // Déclare le formulaire réactif.
 
   constructor(
-    private fb: FormBuilder, // Injecte le FormBuilder comme dépendance du composant.
-    private router: Router) { }
+    private fb: FormBuilder,
+    private router: Router,
+    private authService: AuthService
+  ) {}
 
-  ngOnInit() { // sur FormBuilder, on appelle la méthode group() qui permet d’instancier un nouveau FormGroup.
+  ngOnInit() {
+    // sur FormBuilder, on appelle la méthode group() qui permet d’instancier un nouveau FormGroup.
     this.registerForm = this.fb.group({
       // Validators.<regle_de_validation> <==> <nom_du_champs>.errors.<regle_de_validation>
-      'name': ['', [
-        Validators.required,
-        Validators.minLength(4),
-        Validators.maxLength(20),
-        Validators.pattern('^[a-zA-Z0-9_-]*$')
-      ]],
-      'email': ['', [
-        Validators.required,
-        Validators.email
-      ]],
-      'password': ['', [
-        Validators.required,
-        Validators.minLength(6),
-        Validators.maxLength(20)
-      ]]
+      name: [
+        '',
+        [
+          Validators.required,
+          Validators.minLength(4),
+          Validators.maxLength(20),
+          Validators.pattern('^[a-zA-Z0-9_-]*$'),
+        ],
+      ],
+      email: ['', [Validators.required, Validators.email]],
+      password: [
+        '',
+        [
+          Validators.required,
+          Validators.minLength(6),
+          Validators.maxLength(20),
+        ],
+      ],
     });
   }
 
-  // get appartient à TypeScript : permet de définir un getter, donc un accès direct aux champs du formulaire. 
-  get name() { return this.registerForm.get('name') } // sans le getter : this.registerForm.get(‘name’).value 
-  get email() { return this.registerForm.get('email') }
-  get password() { return this.registerForm.get('password') }
-  // La prop value est disponible sur tous les objets FormControl & les instances de FormGroup.
-  // accéder à toutes les valeurs du formulaire : this.registerForm.value 
-
-  submit(): void {
-    console.info(this.name?.value);
-    console.info(this.email?.value);
-    console.info(this.password?.value);
-    this.router.navigate(['/app/dashboard']);
+  // get appartient à TypeScript : permet de définir un getter, donc un accès direct aux champs du formulaire.
+  get name() {
+    return this.registerForm.get('name');
+  } // sans le getter : this.registerForm.get(‘name’).value
+  get email() {
+    return this.registerForm.get('email');
   }
+  get password() {
+    return this.registerForm.get('password');
+  }
+  // La prop value est disponible sur tous les objets FormControl & les instances de FormGroup.
+  // Pour accéder à toutes les valeurs du formulaire : this.registerForm.value
 
+  /* On appelle register() avec en param les infos saisies par l’utilisateur dans le formulaire.
+      Success: on redirige l’utilisateur vers son tableau de bord.
+      Failure: on efface les données erronées qu’il a saisi, grâce à reset() du formulaire d’inscription. */
+  submit(): void {
+    this.authService
+      .register(this.name?.value, this.email?.value, this.password?.value)
+      .subscribe(
+        (_) => this.router.navigate(['/app/dashboard']),
+        (_) => this.registerForm.reset()
+      );
+  }
 }
