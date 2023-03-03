@@ -1,11 +1,14 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
 import { ProtectedComponent } from './protected.component';
+import { AuthGuard } from '../core/guards/auth.guard';
 
 const routes: Routes = [
   {
     path: 'app', // Prefix for app routes
-    component: ProtectedComponent, // Declare ProtectedComponent comme le parent de toutes les routes de l'espace membre. 
+    component: ProtectedComponent, // Declare ProtectedComponent comme le parent de toutes les routes de l'espace membre.
+    canActivate: [AuthGuard],
+    canActivateChild: [AuthGuard],
     children: [ // Classes filles...
       {
         path: 'dashboard',

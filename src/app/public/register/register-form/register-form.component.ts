@@ -67,7 +67,5 @@ export class RegisterFormComponent implements OnInit {
         (_) => this.registerForm.reset()
       );
     console.info(this.name?.value);
-    console.info(this.email?.value);
-    console.info(this.password?.value);
   }
 }

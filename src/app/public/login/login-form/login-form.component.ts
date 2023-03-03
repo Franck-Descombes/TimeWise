@@ -49,6 +49,5 @@ export class LoginFormComponent implements OnInit {
       (_) => this.loginForm.reset()
     );
     console.info(this.email?.value);
-    console.info(this.password?.value);
   }
 }

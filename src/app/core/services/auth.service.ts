@@ -30,48 +30,52 @@ export class AuthService {
     private router: Router
   ) {}
 
-  /* REGISTER ET LOGER UN USER :
-     1. A faire : Faire un appel au backend.
-     2. A faire : Mettre à jour l’état en fonction de la réponse du backend.
-     3. A faire : Retournez la réponse du backend sous la forme d’un Observable, pour le composant qui déclenche cette action.*/
-
-  // 1) URL PATH FOR FIREBASE REGISTRATION
+  // Cette méthode sert à enregistrer un nouvel utilisateur dans l'application en utilisant les informations fournies.
+  // Elle envoie une requête HTTP POST au backend pour créer un nouvel utilisateur avec l'API Firebase, puis stocke les informations de l'utilisateur créé dans la base de données Firestore.
+  // Si l'enregistrement est réussi, elle met à jour l'état de l'utilisateur authentifié et retourne un Observable qui émet l'utilisateur créé.
+  // Si une erreur survient, elle renvoie un Observable qui émet l'erreur et la transmet à la méthode handleError() du service d'erreur.
   public register(
     name: string,
     email: string,
     password: string
   ): Observable<User | null> {
+    // URL de l'API Firebase pour l'enregistrement d'un nouvel utilisateur
     const url = `${environment.firebase.auth.baseURL}/signupNewUser?key=${environment.firebase.apiKey}`;
-    /* OLD WAY TO DECLARE & CONCATENATE VARIABLES WITHOUT USING environment.ts:
-                    const API_KEY: string = 'AIzaSyC1bnYLISWi1Pk10uM43YkCs59Evx8X0Hk'; // firebase unique ID
-                    const API_AUTH_BASEURL: string = `https://www.googleapis.com/identitytoolkit/v3/relyingparty`; // common path to all firebase endpoints
-                    const url: string = `${API_AUTH_BASEURL}/signupNewUser?key=${API_KEY}`; // URL built */
 
-    // 2) SEND PAYLOAD TO THE REST API.
+    // Les informations de l'utilisateur à enregistrer dans le backend
     const data = { email: email, password: password, returnSecureToken: true };
 
-    // 3) ADD HEADER USING HTTPHEADERS CLASS
+    // Options HTTP pour l'en-tête de la requête
     const httpOptions = {
       headers: new HttpHeaders({ 'Content-Type': 'application/json' }),
     };
+
+    // Affiche le loader pendant l'envoi de la requête HTTP
     this.loaderService.setLoading(true);
 
-    // 4) EXECUTE AUTH REQUEST USING HTTPCLIENT CLASS
+    // Envoie la requête HTTP POST au backend pour créer un nouvel utilisateur avec l'API Firebase
     return this.http.post(url, data, httpOptions).pipe(
+      // Si la requête est réussie, enregistre l'utilisateur dans la base de données Firestore et renvoie un Observable qui émet l'utilisateur créé
       switchMap((data: any) => {
+        // Extrait le jeton JWT de la réponse HTTP
         const jwt: string = data.idToken;
+
+        // Crée un objet User à partir des informations de l'utilisateur nouvellement créé
         const user = new User({
           email: data.email,
           id: data.localId,
           name: name,
         });
 
+        // Enregistre l'utilisateur créé dans la base de données Firestore
         return this.usersService.save(user, jwt);
       }),
-      // 'tap' est un petit utilitaire permettant d’effectuer une action avec les données qui transitent dans un flux, sans pour autant le modifier.
-      tap((user) => this.user.next(user)), // update service status.
-      catchError((error) => this.errorService.handleError(error)), // Transmets l’erreur à handleError() du service, elle s’occupera de prévenir les users.
-      finalize(() => this.loaderService.setLoading(false)) // Permet de mettre fin à l’affichage du loader, quelque soit l’issue des appels réseaux.
+      // Si l'enregistrement est réussi, met à jour l'état de l'utilisateur authentifié
+      tap((user) => this.user.next(user)),
+      // Si une erreur survient, transmet l'erreur à la méthode handleError() du service d'erreur
+      catchError((error) => this.errorService.handleError(error)),
+      // Arrête l'affichage du loader, que la requête soit réussie ou non
+      finalize(() => this.loaderService.setLoading(false))
     );
   }
 
