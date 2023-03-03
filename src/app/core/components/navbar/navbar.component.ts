@@ -50,4 +50,8 @@ export class NavbarComponent implements OnInit, OnDestroy {
   toggleSidenav() {
     this.layoutService.toggleSidenav();
   }
+
+  logout() {
+    this.authService.logout();
+  }
 }

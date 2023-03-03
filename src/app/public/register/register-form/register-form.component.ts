@@ -21,7 +21,7 @@ export class RegisterFormComponent implements OnInit {
   ) {}
 
   ngOnInit() {
-    // sur FormBuilder, on appelle la méthode group() qui permet d’instancier un nouveau FormGroup.
+    // sur FormBuilder, on appelle la méthode group() qui permet d’instancier un nouveau FormGroup (un form reactif, donc)
     this.registerForm = this.fb.group({
       // Validators.<regle_de_validation> <==> <nom_du_champs>.errors.<regle_de_validation>
       name: [
@@ -58,9 +58,7 @@ export class RegisterFormComponent implements OnInit {
   // La prop value est disponible sur tous les objets FormControl & les instances de FormGroup.
   // Pour accéder à toutes les valeurs du formulaire : this.registerForm.value
 
-  /* On appelle register() avec en param les infos saisies par l’utilisateur dans le formulaire.
-      Success: on redirige l’utilisateur vers son tableau de bord.
-      Failure: on efface les données erronées qu’il a saisi, grâce à reset() du formulaire d’inscription. */
+  // Call register() avec en param les infos saisies par l’utilisateur dans le formulaire.
   submit(): void {
     this.authService
       .register(this.name?.value, this.email?.value, this.password?.value)
@@ -68,5 +66,8 @@ export class RegisterFormComponent implements OnInit {
         (_) => this.router.navigate(['/app/dashboard']),
         (_) => this.registerForm.reset()
       );
+    console.info(this.name?.value);
+    console.info(this.email?.value);
+    console.info(this.password?.value);
   }
 }

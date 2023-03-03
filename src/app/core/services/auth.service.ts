@@ -1,6 +1,6 @@
-// service d’authentification est dédié à la récupération des jetons JWT, et établit si l’utilisateur courant est connecté ou non.
+// Ce service d'authentification est responsable de la récupération des jetons JWT et de la vérification de la connexion de l'utilisateur courant.
 import { Injectable } from '@angular/core';
-import { BehaviorSubject, Observable, of } from 'rxjs';
+import { BehaviorSubject, Observable } from 'rxjs';
 import { User } from 'src/app/shared/models/user';
 import { HttpHeaders } from '@angular/common/http';
 import { HttpClient } from '@angular/common/http';
@@ -9,6 +9,7 @@ import { switchMap, tap, catchError, finalize } from 'rxjs/operators';
 import { UsersService } from './users.service';
 import { ErrorService } from './error.service';
 import { LoaderService } from './loader.service';
+import { Router } from '@angular/router';
 
 @Injectable({
   providedIn: 'root',
@@ -18,17 +19,23 @@ export class AuthService {
   private user: BehaviorSubject<User | null> = new BehaviorSubject<User | null>(
     null
   );
-  // Le flux user$ est typé en Observable<User|null> pour permettre aux reste de l'app d'observer cet état, authentifié ou non.
+  // Le flux $user est un Observable qui émet un nouvel utilisateur authentifié.
   readonly user$: Observable<User | null> = this.user.asObservable();
 
   constructor(
     private http: HttpClient,
     private usersService: UsersService,
     private errorService: ErrorService,
-    private loaderService: LoaderService
+    private loaderService: LoaderService,
+    private router: Router
   ) {}
 
-  // 1) BUILD URL PATH
+  /* REGISTER ET LOGER UN USER :
+     1. A faire : Faire un appel au backend.
+     2. A faire : Mettre à jour l’état en fonction de la réponse du backend.
+     3. A faire : Retournez la réponse du backend sous la forme d’un Observable, pour le composant qui déclenche cette action.*/
+
+  // 1) URL PATH FOR FIREBASE REGISTRATION
   public register(
     name: string,
     email: string,
@@ -36,9 +43,9 @@ export class AuthService {
   ): Observable<User | null> {
     const url = `${environment.firebase.auth.baseURL}/signupNewUser?key=${environment.firebase.apiKey}`;
     /* OLD WAY TO DECLARE & CONCATENATE VARIABLES WITHOUT USING environment.ts:
-          const API_KEY: string = 'AIzaSyC1bnYLISWi1Pk10uM43YkCs59Evx8X0Hk'; // firebase unique ID
-          const API_AUTH_BASEURL: string = `https://www.googleapis.com/identitytoolkit/v3/relyingparty`; // common path to all firebase endpoints
-          const url: string = `${API_AUTH_BASEURL}/signupNewUser?key=${API_KEY}`; // URL built */
+                    const API_KEY: string = 'AIzaSyC1bnYLISWi1Pk10uM43YkCs59Evx8X0Hk'; // firebase unique ID
+                    const API_AUTH_BASEURL: string = `https://www.googleapis.com/identitytoolkit/v3/relyingparty`; // common path to all firebase endpoints
+                    const url: string = `${API_AUTH_BASEURL}/signupNewUser?key=${API_KEY}`; // URL built */
 
     // 2) SEND PAYLOAD TO THE REST API.
     const data = { email: email, password: password, returnSecureToken: true };
@@ -62,22 +69,36 @@ export class AuthService {
         return this.usersService.save(user, jwt);
       }),
       // 'tap' est un petit utilitaire permettant d’effectuer une action avec les données qui transitent dans un flux, sans pour autant le modifier.
-      tap((user) => this.user.next(user)), // MAJ de l’état du service (après que le user soit inscrit & enregistré dans le Firestore).
+      tap((user) => this.user.next(user)), // update service status.
       catchError((error) => this.errorService.handleError(error)), // Transmets l’erreur à handleError() du service, elle s’occupera de prévenir les users.
       finalize(() => this.loaderService.setLoading(false)) // Permet de mettre fin à l’affichage du loader, quelque soit l’issue des appels réseaux.
     );
   }
 
-  login(email: string, password: string): Observable<User | null> {
-    // 1. A faire : Faire un appel au backend.
-    // 2. A faire : Mettre à jour l’état en fonction de la réponse du backend.
-    // 3. A faire : Retournez la réponse du backend sous la forme d’un Observable, pour le composant qui déclenche cette action.
-    return of(new User()); // Retourne un Observable contenant un utilisateur, grâce à l’opérateur of de RxJS. Simple code pour calmer l'IDE.
+  public login(email: string, password: string): Observable<User | null> {
+    const url = `${environment.firebase.auth.baseURL}/verifyPassword?key=${environment.firebase.apiKey}`;
+    const data = { email: email, password: password, returnSecureToken: true };
+    const httpOptions = {
+      headers: new HttpHeaders({ 'Content-Type': 'application/json' }),
+    };
+    this.loaderService.setLoading(true); // set loader to true.
+
+    return this.http.post<User>(url, data, httpOptions).pipe(
+      switchMap((data: any) => {
+        const userId: string = data.localId;
+        const jwt: string = data.idToken;
+        return this.usersService.get(userId, jwt);
+      }),
+      tap((user) => this.user.next(user)), // Update service status.
+      catchError((error) => this.errorService.handleError(error)), // Intercept potential errors.
+      finalize(() => this.loaderService.setLoading(false)) // Stop loading (which has been set to true).
+    );
   }
 
   // 'null' lorsque non authentifié.
-  logout() {
-    return of(null);
+  logout(): void {
+    this.user.next(null);
+    this.router.navigate(['/login']);
   }
 }
 
