@@ -1,11 +1,11 @@
 // Ce service d'authentification est responsable de la récupération des jetons JWT et de la vérification de la connexion de l'utilisateur courant.
 import { Injectable } from '@angular/core';
-import { BehaviorSubject, Observable } from 'rxjs';
+import { BehaviorSubject, Observable, of } from 'rxjs';
 import { User } from 'src/app/shared/models/user';
 import { HttpHeaders } from '@angular/common/http';
 import { HttpClient } from '@angular/common/http';
 import { environment } from 'src/environments/environment';
-import { switchMap, tap, catchError, finalize } from 'rxjs/operators';
+import { switchMap, tap, catchError, finalize, delay } from 'rxjs/operators';
 import { UsersService } from './users.service';
 import { ErrorService } from './error.service';
 import { LoaderService } from './loader.service';
@@ -66,16 +66,13 @@ export class AuthService {
           id: data.localId,
           name: name,
         });
-
-        // Enregistre l'utilisateur créé dans la base de données Firestore
-        return this.usersService.save(user, jwt);
+        this.saveAuthData(data.localId, jwt); // Lorsque l’utilisateur s’inscrit, on sauvegarde ces informations de connexion.
+        return this.usersService.save(user, jwt); // Enregistre l'utilisateur créé dans la base de données Firestore
       }),
-      // Si l'enregistrement est réussi, met à jour l'état de l'utilisateur authentifié
-      tap((user) => this.user.next(user)),
-      // Si une erreur survient, transmet l'erreur à la méthode handleError() du service d'erreur
-      catchError((error) => this.errorService.handleError(error)),
-      // Arrête l'affichage du loader, que la requête soit réussie ou non
-      finalize(() => this.loaderService.setLoading(false))
+      tap((user) => this.user.next(user)), // Si l'enregistrement est réussi, met à jour l'état de l'utilisateur authentifié
+      tap((_) => this.logoutTimer(3600)), // déclenche la minuterie.
+      catchError((error) => this.errorService.handleError(error)), // Si une erreur survient, transmet l'erreur à la méthode handleError() du service d'erreur
+      finalize(() => this.loaderService.setLoading(false)) // Arrête l'affichage du loader, que la requête soit réussie ou non
     );
   }
 
@@ -91,16 +88,42 @@ export class AuthService {
       switchMap((data: any) => {
         const userId: string = data.localId;
         const jwt: string = data.idToken;
+        this.saveAuthData(data.localId, jwt); // sauvegarde des informations de connexion de l'utilisateur.
         return this.usersService.get(userId, jwt);
       }),
       tap((user) => this.user.next(user)), // Update service status.
+      tap((_) => this.logoutTimer(3600)), // déclenche la minuterie.
       catchError((error) => this.errorService.handleError(error)), // Intercept potential errors.
-      finalize(() => this.loaderService.setLoading(false)) // Stop loading (which has been set to true).
+      finalize(() => this.loaderService.setLoading(false)) // Stop loading (if it's set to true).
     );
+  }
+
+  autoLogin(user: User) {
+    this.user.next(user);
+    this.router.navigate(['app/dashboard']);
+  }
+
+  private saveAuthData(userId: string, token: string) {
+    const now = new Date();
+    const expirationDate = (now.getTime() + 3600 * 1000).toString();
+    localStorage.setItem('expirationDate', expirationDate);
+    localStorage.setItem('token', token);
+    localStorage.setItem('userId', userId);
+  }
+
+  // déclenche la minuterie (inscription & connexion du user)
+  private logoutTimer(expirationTime: number): void {
+    of(true)
+      .pipe(delay(expirationTime * 1000))
+      .subscribe((_) => this.logout());
   }
 
   // 'null' lorsque non authentifié.
   logout(): void {
+    // 3 ci-dessous: nécessaires pour vider le localStorage quand user déconnecté. 
+    localStorage.removeItem('expirationDate'); 
+    localStorage.removeItem('token');
+    localStorage.removeItem('userId'); 
     this.user.next(null);
     this.router.navigate(['/login']);
   }

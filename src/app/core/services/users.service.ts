@@ -16,25 +16,21 @@ import { switchMap } from 'rxjs/operators';
 export class UsersService {
   constructor(private http: HttpClient) {}
 
-  // Enregistre un utilisateur dans Firestore en utilisant une requête HTTP POST
-  // Retourne un objet Observable<User | null> qui émettra soit l'objet User enregistré en cas de succès, soit null en cas d'échec.
+  // Cette méthode enregistre un objet utilisateur dans Firestore et renvoie un objet Observable<User | null>.
+  // Cet Observable émet soit l'objet User enregistré en cas de succès, soit null en cas d'échec.
   save(user: User, jwt: string): Observable<User | null> {
-    // URL pour envoyer la requête HTTP POST à Firestore
     const url = `${environment.firebase.firestore.baseURL}/users?key=${environment.firebase.apiKey}&documentId=${user.id}`;
 
-    // Convertit l'objet utilisateur en un objet JSON attendu par Firestore
+    // Mapping entre l'objet User et les données requises par Firestore.
     const data = this.getDataForFirestore(user);
-
-    // En-tête de la requête HTTP POST
     const httpOptions = {
       headers: new HttpHeaders({
         'Content-Type': 'application/json',
-        Authorization: `Bearer ${jwt}`, // transmet le JWT reçu au backend.
+        Authorization: `Bearer ${jwt}`, // Envoie le JWT reçu au backend.
       }),
     };
 
-    // Envoie la requête HTTP POST à Firestore et retourne un objet Observable<User | null>
-    // Transforme les données retournées par Firestore en un objet utilisateur
+    // Récupère les données retournées par la requête Firestore et les transforme en un objet User.
     return this.http.post(url, data, httpOptions).pipe(
       switchMap((data: any) => {
         return of(this.getUserFromFirestore(data.fields));
@@ -42,16 +38,11 @@ export class UsersService {
     );
   }
 
-  // Récupère un utilisateur à partir de son identifiant en utilisant une requête HTTP POST
-  // Retourne un objet Observable<User | null> qui émettra soit l'objet User récupéré en cas de succès, soit null en cas d'échec.
+  // Cette méthode récupère un objet utilisateur à partir de son ID, en utilisant Firestore.
+  // Elle renvoie un objet Observable<User | null>.
   get(userId: string, jwt: string): Observable<User | null> {
-    // URL pour envoyer la requête HTTP POST à Firestore
     const url = `${environment.firebase.firestore.baseURL}:runQuery?key=${environment.firebase.apiKey}`;
-
-    // Convertit l'identifiant de l'utilisateur en un objet JSON attendu par Firestore
-    const data = this.getStructuredQuery(userId);
-
-    // En-tête de la requête HTTP POST
+    const data = this.getStructuredQuery(userId); // Crée un objet structuré pour la requête Firestore (convertit l'id du user en un objet JSON).
     const httpOptions = {
       headers: new HttpHeaders({
         'Content-Type': 'application/json',
@@ -59,8 +50,7 @@ export class UsersService {
       }),
     };
 
-    // Envoie la requête HTTP POST à Firestore et retourne un objet Observable<User | null>
-    // Transforme les données retournées par Firestore en un objet utilisateur
+    // Récupère les données retournées par la requête Firestore et les transforme en un objet User.
     return this.http.post(url, data, httpOptions).pipe(
       switchMap((data: any) => {
         return of(this.getUserFromFirestore(data[0].document.fields));
@@ -68,11 +58,11 @@ export class UsersService {
     );
   }
 
-  // Convertit l'identifiant de l'utilisateur en un objet JSON attendu par Firestore
-  private getStructuredQuery(userId: string): Object {
+// Convertit l'identifiant de l'utilisateur en un objet JSON pour Firestore
+private getStructuredQuery(userId: string): Object {
     return {
       structuredQuery: {
-        // Définit la collection Firestore dans laquelle rechercher l'utilisateur
+        // Spécifie la collection Firestore dans laquelle effectuer la recherche
         from: [{ collectionId: 'users' }],
 
         // Définit les critères de recherche pour l'utilisateur
@@ -86,13 +76,14 @@ export class UsersService {
           },
         },
 
-        limit: 1, // Limite le nombre de résultats renvoyés à 1
+        // Limite le nombre de résultats renvoyés à 1
+        limit: 1,
       },
     };
   }
 
-  // Mappage des résultats Firestore en un objet User
-  private getUserFromFirestore(fields: any): User {
+// Mappage des résultats Firestore en un objet User
+private getUserFromFirestore(fields: any): User {
     return new User({
       id: fields.id.stringValue,
       email: fields.email.stringValue,
@@ -102,7 +93,7 @@ export class UsersService {
     });
   }
 
-  // Mappage d'un objet User en un objet JSON pouvant être stocké dans Firestore
+  // Convertit un objet User en un objet JSON pouvant être stocké dans Firestore
   private getDataForFirestore(user: User): Object {
     return {
       fields: {
