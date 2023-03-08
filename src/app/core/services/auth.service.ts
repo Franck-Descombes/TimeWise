@@ -1,15 +1,15 @@
 // Ce service d'authentification est responsable de la récupération des jetons JWT et de la vérification de la connexion de l'utilisateur courant.
+import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Injectable } from '@angular/core';
+import { Router } from '@angular/router';
 import { BehaviorSubject, Observable, of } from 'rxjs';
+import { catchError, delay, finalize, switchMap, tap } from 'rxjs/operators';
 import { User } from 'src/app/shared/models/user';
-import { HttpHeaders } from '@angular/common/http';
-import { HttpClient } from '@angular/common/http';
 import { environment } from 'src/environments/environment';
-import { switchMap, tap, catchError, finalize, delay } from 'rxjs/operators';
-import { UsersService } from './users.service';
 import { ErrorService } from './error.service';
 import { LoaderService } from './loader.service';
-import { Router } from '@angular/router';
+import { ToastrService } from './toastr.service';
+import { UsersService } from './users.service';
 
 @Injectable({
   providedIn: 'root',
@@ -27,7 +27,8 @@ export class AuthService {
     private usersService: UsersService,
     private errorService: ErrorService,
     private loaderService: LoaderService,
-    private router: Router
+    private router: Router,
+    private toastrService: ToastrService
   ) {}
 
   // Cette méthode sert à enregistrer un nouvel utilisateur dans l'application en utilisant les informations fournies.
@@ -42,8 +43,7 @@ export class AuthService {
     // URL de l'API Firebase pour l'enregistrement d'un nouvel utilisateur
     const url = `${environment.firebase.auth.baseURL}/signupNewUser?key=${environment.firebase.apiKey}`;
 
-    // Les informations de l'utilisateur à enregistrer dans le backend
-    const data = { email: email, password: password, returnSecureToken: true };
+    const data = { email: email, password: password, returnSecureToken: true }; // user infos
 
     // Options HTTP pour l'en-tête de la requête
     const httpOptions = {
@@ -58,22 +58,59 @@ export class AuthService {
       // Si la requête est réussie, enregistre l'utilisateur dans la base de données Firestore et renvoie un Observable qui émet l'utilisateur créé
       switchMap((data: any) => {
         // Extrait le jeton JWT de la réponse HTTP
-        const jwt: string = data.idToken;
-
-        // Crée un objet User à partir des informations de l'utilisateur nouvellement créé
+        const jwt: string = data.idToken; // Crée un objet User à partir des informations de l'utilisateur nouvellement créé.
         const user = new User({
           email: data.email,
           id: data.localId,
           name: name,
         });
         this.saveAuthData(data.localId, jwt); // Lorsque l’utilisateur s’inscrit, on sauvegarde ces informations de connexion.
-        return this.usersService.save(user, jwt); // Enregistre l'utilisateur créé dans la base de données Firestore
+        return this.usersService.save(user, jwt); // Save created user into the database.
       }),
       tap((user) => this.user.next(user)), // Si l'enregistrement est réussi, met à jour l'état de l'utilisateur authentifié
       tap((_) => this.logoutTimer(3600)), // déclenche la minuterie.
       catchError((error) => this.errorService.handleError(error)), // Si une erreur survient, transmet l'erreur à la méthode handleError() du service d'erreur
       finalize(() => this.loaderService.setLoading(false)) // Arrête l'affichage du loader, que la requête soit réussie ou non
     );
+  }
+
+  /**
+Met à jour l'état global de l'application avec les informations de l'utilisateur.
+@param user Objet User représentant l'utilisateur.
+@returns Observable qui émet l'utilisateur mis à jour ou une erreur.
+*/
+  updateUserState(user: User): Observable<User | null> {
+    this.loaderService.setLoading(true);
+    return this.usersService.update(user).pipe(
+      tap((updateduser) => this.user.next(updateduser)),
+      tap((_) =>
+        this.toastrService.showToastr({
+          category: 'success',
+          message: 'Vos informations ont été mises à jour',
+        })
+      ),
+      catchError((error) => this.errorService.handleError(error)),
+      finalize(() => this.loaderService.setLoading(false))
+    );
+  }
+
+  // public updateUserState(user: User): Observable<User|null> {
+  //   this.loaderService.setLoading(true);
+
+  //   return this.usersService.update(user).pipe(
+  //    tap(user => this.user.next(user)),
+  //  tap(_ => this.toastrService.showToastr({
+  //   category: 'success',
+  //   message: 'Vos informations ont été mises à jour !'
+  //  })),
+  //    catchError(error => this.errorService.handleError(error)),
+  //    finalize(() => this.loaderService.setLoading(false))
+  //   );
+  //  }
+
+  // Permet de renvoyer la dernière valeur de l’état de l’utilisateur courant != Observable user$ qui renvoit les valeurs en continu à chaque modification de l’utilisateur.
+  get currentUser(): User | null {
+    return this.user.getValue();
   }
 
   public login(email: string, password: string): Observable<User | null> {
@@ -103,6 +140,13 @@ export class AuthService {
     this.router.navigate(['app/dashboard']);
   }
 
+  // déclenche la minuterie (inscription & connexion du user)
+  private logoutTimer(expirationTime: number): void {
+    of(true)
+      .pipe(delay(expirationTime * 1000))
+      .subscribe((_) => this.logout());
+  }
+
   private saveAuthData(userId: string, token: string) {
     const now = new Date();
     const expirationDate = (now.getTime() + 3600 * 1000).toString();
@@ -111,19 +155,12 @@ export class AuthService {
     localStorage.setItem('userId', userId);
   }
 
-  // déclenche la minuterie (inscription & connexion du user)
-  private logoutTimer(expirationTime: number): void {
-    of(true)
-      .pipe(delay(expirationTime * 1000))
-      .subscribe((_) => this.logout());
-  }
-
   // 'null' lorsque non authentifié.
   logout(): void {
-    // 3 ci-dessous: nécessaires pour vider le localStorage quand user déconnecté. 
-    localStorage.removeItem('expirationDate'); 
+    // 3 ci-dessous: nécessaires pour vider le localStorage quand user déconnecté.
+    localStorage.removeItem('expirationDate');
     localStorage.removeItem('token');
-    localStorage.removeItem('userId'); 
+    localStorage.removeItem('userId');
     this.user.next(null);
     this.router.navigate(['/login']);
   }

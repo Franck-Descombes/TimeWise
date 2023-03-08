@@ -29,7 +29,7 @@ export class AppComponent implements OnInit {
     return;
    }
   
-   // Connecte l’utilisateur avec les informations de connexions stockées.
+   // Connecte l’utilisateur avec les infos de connexion stockées dans le local storage.
    const userId: string = localStorage.getItem('userId')!;
    this.usersService.get(userId, token).subscribe(user => {
     if(!user) {

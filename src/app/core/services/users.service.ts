@@ -1,7 +1,5 @@
-/* Ce service gère les opérations CRUD liées aux utilisateurs dans Firestore.
-Il utilise les packages Angular comme HttpClientModule et HttpHeaders.
+/* Ce service gère les opérations CRUD liées aux utilisateurs dans Firestore. Il utilise les packages Angular comme HttpClientModule et HttpHeaders.
 Il définit également une classe UsersService en tant que fournisseur de services pour les autres composants Angular.*/
-
 import { Injectable } from '@angular/core';
 import { HttpHeaders } from '@angular/common/http';
 import { HttpClient } from '@angular/common/http';
@@ -38,8 +36,7 @@ export class UsersService {
     );
   }
 
-  // Cette méthode récupère un objet utilisateur à partir de son ID, en utilisant Firestore.
-  // Elle renvoie un objet Observable<User | null>.
+  // Cette méthode récupère un objet utilisateur à partir de son ID, en utilisant Firestore et renvoie un objet Observable<User | null>.
   get(userId: string, jwt: string): Observable<User | null> {
     const url = `${environment.firebase.firestore.baseURL}:runQuery?key=${environment.firebase.apiKey}`;
     const data = this.getStructuredQuery(userId); // Crée un objet structuré pour la requête Firestore (convertit l'id du user en un objet JSON).
@@ -58,8 +55,26 @@ export class UsersService {
     );
   }
 
-// Convertit l'identifiant de l'utilisateur en un objet JSON pour Firestore
-private getStructuredQuery(userId: string): Object {
+  // Cette méthode met à jour les informations d'un objet utilisateur dans Firestore et renvoie un objet Observable<User | null>.
+  update(user: User): Observable<User | null> {
+    const url = `${environment.firebase.firestore.baseURL}/users/${user.id}?key=${environment.firebase.apiKey}&currentDocument.exists=true`; // URL to call
+    const data = this.getDataForFirestore(user); // Body request
+    const httpOptions = {
+      headers: new HttpHeaders({
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${localStorage.getItem('token')}`, // get token from local storage
+      }),
+    };
+
+    return this.http.patch(url, data, httpOptions).pipe(
+      switchMap((data: any) => {
+        return of(this.getUserFromFirestore(data.fields));
+      })
+    );
+  }
+
+  // Convertit l'identifiant de l'utilisateur en un objet JSON pour Firestore
+  private getStructuredQuery(userId: string): Object {
     return {
       structuredQuery: {
         // Spécifie la collection Firestore dans laquelle effectuer la recherche
@@ -82,8 +97,8 @@ private getStructuredQuery(userId: string): Object {
     };
   }
 
-// Mappage des résultats Firestore en un objet User
-private getUserFromFirestore(fields: any): User {
+  // Mappage des résultats Firestore en un objet User
+  private getUserFromFirestore(fields: any): User {
     return new User({
       id: fields.id.stringValue,
       email: fields.email.stringValue,

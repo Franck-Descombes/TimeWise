@@ -18,7 +18,7 @@ export class AuthGuard implements CanActivate, CanActivateChild {
       tap((isLogged) => {
         if (!isLogged) {
           this.router.navigate(['/login']);
-          return false; // user not authenticated => redirect back to login page
+          return false; // user not authenticated: redirect to login page
         }
 
         return true; // user authenticated
