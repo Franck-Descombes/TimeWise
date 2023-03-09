@@ -31,22 +31,20 @@ export class AuthService {
     private toastrService: ToastrService
   ) {}
 
-  // Cette méthode sert à enregistrer un nouvel utilisateur dans l'application en utilisant les informations fournies.
-  // Elle envoie une requête HTTP POST au backend pour créer un nouvel utilisateur avec l'API Firebase, puis stocke les informations de l'utilisateur créé dans la base de données Firestore.
-  // Si l'enregistrement est réussi, elle met à jour l'état de l'utilisateur authentifié et retourne un Observable qui émet l'utilisateur créé.
-  // Si une erreur survient, elle renvoie un Observable qui émet l'erreur et la transmet à la méthode handleError() du service d'erreur.
+  /* Cette méthode sert à enregistrer un nouvel utilisateur dans l'application en utilisant les informations fournies.
+   * Elle envoie une requête HTTP POST au backend pour créer un nouvel utilisateur avec l'API Firebase, puis stocke les informations de l'utilisateur créé dans la base de données Firestore.
+   * Si l'enregistrement est réussi, elle met à jour l'état de l'utilisateur authentifié et retourne un Observable qui émet l'utilisateur créé.
+   * Si une erreur survient, elle renvoie un Observable qui émet l'erreur et la transmet à la méthode handleError() du service d'erreur. */
   public register(
     name: string,
     email: string,
     password: string
   ): Observable<User | null> {
-    // URL de l'API Firebase pour l'enregistrement d'un nouvel utilisateur
-    const url = `${environment.firebase.auth.baseURL}/signupNewUser?key=${environment.firebase.apiKey}`;
+    const url = `${environment.firebase.auth.baseURL}/signupNewUser?key=${environment.firebase.apiKey}`; // URL de l'API Firebase pour l'enregistrement d'un nouvel utilisateur
+    const data = { email: email, password: password, returnSecureToken: true }; // data user
 
-    const data = { email: email, password: password, returnSecureToken: true }; // user infos
-
-    // Options HTTP pour l'en-tête de la requête
     const httpOptions = {
+      // Options HTTP pour l'en-tête de la requête
       headers: new HttpHeaders({ 'Content-Type': 'application/json' }),
     };
 
@@ -75,14 +73,15 @@ export class AuthService {
   }
 
   /**
-Met à jour l'état global de l'application avec les informations de l'utilisateur.
-@param user Objet User représentant l'utilisateur.
-@returns Observable qui émet l'utilisateur mis à jour ou une erreur.
-*/
+   * Met à jour l'état global de l'application avec les informations de l'utilisateur.
+   C'est cette méthode qui appelle la méthode update du service UsersService, qui elle fait la requête au backend Firestore.
+  @param user Objet User représentant l'utilisateur.
+  @returns Observable qui émet l'utilisateur mis à jour ou une erreur.
+  */
   updateUserState(user: User): Observable<User | null> {
     this.loaderService.setLoading(true);
     return this.usersService.update(user).pipe(
-      tap((updateduser) => this.user.next(updateduser)),
+      tap((user) => this.user.next(user)),
       tap((_) =>
         this.toastrService.showToastr({
           category: 'success',

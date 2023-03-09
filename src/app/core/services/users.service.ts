@@ -55,14 +55,15 @@ export class UsersService {
     );
   }
 
-  // Cette méthode met à jour les informations d'un objet utilisateur dans Firestore et renvoie un objet Observable<User | null>.
+  // Cette méthode est appelée par la méthode updateUserState du service AuthService. update() fait la requête au backend Firestore.
+  // Elle met à jour les informations d'un objet utilisateur dans Firestore et renvoie un objet Observable<User | null>.
   update(user: User): Observable<User | null> {
     const url = `${environment.firebase.firestore.baseURL}/users/${user.id}?key=${environment.firebase.apiKey}&currentDocument.exists=true`; // URL to call
     const data = this.getDataForFirestore(user); // Body request
     const httpOptions = {
       headers: new HttpHeaders({
         'Content-Type': 'application/json',
-        Authorization: `Bearer ${localStorage.getItem('token')}`, // get token from local storage
+        Authorization: `Bearer ${localStorage.getItem('token')}`, // récupérer le JWT depuis local storage.
       }),
     };
 

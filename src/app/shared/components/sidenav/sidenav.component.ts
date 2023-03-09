@@ -1,7 +1,5 @@
-import { Component, OnInit, OnDestroy } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
-import { User } from '../../models/user';
-import { Subscription } from 'rxjs';
 import { AuthService } from 'src/app/core/services/auth.service';
 
 @Component({
@@ -24,7 +22,8 @@ export class SidenavComponent implements OnInit {
   constructor(private router: Router, private authService: AuthService) {}
 
   ngOnInit() {
-    this.subscription = this.authService.user$.subscribe( // Ce service expose l’état de l’utilisateur courant à travers l’Observable user$...
+    this.subscription = this.authService.user$.subscribe(
+      // Ce service expose l’état de l’utilisateur courant à travers l’Observable user$...
       (user) => (this.user = user) // J'expose l'utilisateur courant pour le template sidenav.component.html
     );
   }

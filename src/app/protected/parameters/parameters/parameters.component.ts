@@ -20,11 +20,11 @@ export class ParametersComponent implements OnInit {
     });
   }
 
-  // récupère la dernière valeur de l’utilisateur courant, grâce à la méthode currentUser()
   onSubmit() {
+    // récupère la dernière valeur de l’utilisateur courant, grâce à la méthode currentUser()
     const user: User | null = this.authService.currentUser;
     if (user) {
-      // puis défini une new value (celle que l’utilisateur a sélectionné depuis le formulaire des paramètres).
+      // puis défini une new value (que l’utilisateur a sélectionné depuis le formulaire des paramètres).
       user.pomodoroDuration = this.parametersForm.get('pomodoro')?.value * 60;
       this.authService.updateUserState(user).subscribe();
     }
