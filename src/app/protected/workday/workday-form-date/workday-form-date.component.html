@@ -1,5 +1,8 @@
 <!-- bsDatepicker (attribut from ngx-bootstrap) : transforme ce simple champ input de type texte en un datepicker complet et fonctionnel.
-     bsConfig (directive from ngx-bootstrap) : personnalise des éléments (dont le format de la date attendue) => affiche la date dans un format français -->
+     bsValueChange : Observable qui émet un flux de valeurs à partir des données saisies depuis un champ du formulaire.
+     Ici, on intercepte les nouvelles dates sélectionnées par l’utilisateur et on les transmet à la méthode selectDate()
+     bsConfig (directive from ngx-bootstrap) : personnalise des éléments (dont le format de la date attendue) => affiche la date dans un format français 
+ -->
 <div class="row mb-5">
      <div class="col-md-6 mx-auto">
           <div class="form-inline">
@@ -7,6 +10,7 @@
                     <label class="mr-3">Date:</label>
                     <input 
                     bsDatepicker
+                    (bsValueChange)="selectDate($event)"
                     [formControl]="dueDate"
                     [bsConfig]="{ dateInputFormat: 'DD/MM/YYYY' }"
                     type="text"
