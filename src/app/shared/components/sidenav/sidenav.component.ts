@@ -22,9 +22,8 @@ export class SidenavComponent implements OnInit {
   constructor(private router: Router, private authService: AuthService) {}
 
   ngOnInit() {
-    this.subscription = this.authService.user$.subscribe(
-      // Ce service expose l’état de l’utilisateur courant à travers l’Observable user$...
-      (user) => (this.user = user) // J'expose l'utilisateur courant pour le template sidenav.component.html
+    this.subscription = this.authService.user$.subscribe( // Ce service expose l’état de l’utilisateur courant à travers l’Observable user$
+      (user) => (this.user = user) // Expose l'utilisateur courant pour le template sidenav.component.html
     );
   }
 

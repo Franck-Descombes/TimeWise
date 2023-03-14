@@ -16,9 +16,7 @@ import { UsersService } from './users.service';
 })
 export class AuthService {
   // Définit un état "user" en utilisant la classe BehaviorSubject de RxJS. Cet état peut être soit un utilisateur connecté (objet de type User), soit null.
-  private user: BehaviorSubject<User | null> = new BehaviorSubject<User | null>(
-    null
-  );
+  private user: BehaviorSubject<User | null> = new BehaviorSubject<User | null>(null);
   // Le flux $user est un Observable qui émet un nouvel utilisateur authentifié.
   readonly user$: Observable<User | null> = this.user.asObservable();
 
@@ -40,7 +38,7 @@ export class AuthService {
     email: string,
     password: string
   ): Observable<User | null> {
-    const url = `${environment.firebase.auth.baseURL}/signupNewUser?key=${environment.firebase.apiKey}`; // URL de l'API Firebase pour l'enregistrement d'un nouvel utilisateur
+    const url = `${environment.firebase.auth.baseURL}/signupNewUser?key=${environment.firebase.apiKey}`; // URL de l'API Firebase pour l'enregistrement d'un nouvel utilisateur.
     const data = { email: email, password: password, returnSecureToken: true }; // data user
 
     const httpOptions = {
@@ -48,12 +46,12 @@ export class AuthService {
       headers: new HttpHeaders({ 'Content-Type': 'application/json' }),
     };
 
-    // Affiche le loader pendant l'envoi de la requête HTTP
+    // Affiche le loader pendant l'envoi de la requête HTTP.
     this.loaderService.setLoading(true);
 
-    // Envoie la requête HTTP POST au backend pour créer un nouvel utilisateur avec l'API Firebase
+    // Envoie la requête HTTP POST au backend pour créer un nouvel utilisateur avec l'API Firebase.
     return this.http.post(url, data, httpOptions).pipe(
-      // Si la requête est réussie, enregistre l'utilisateur dans la base de données Firestore et renvoie un Observable qui émet l'utilisateur créé
+      // Si la requête est réussie, enregistre l'utilisateur dans la base de données Firestore et renvoie un Observable qui émet l'utilisateur créé.
       switchMap((data: any) => {
         // Extrait le jeton JWT de la réponse HTTP
         const jwt: string = data.idToken; // Crée un objet User à partir des informations de l'utilisateur nouvellement créé.
@@ -62,13 +60,13 @@ export class AuthService {
           id: data.localId,
           name: name,
         });
-        this.saveAuthData(data.localId, jwt); // Lorsque l’utilisateur s’inscrit, on sauvegarde ces informations de connexion.
+        this.saveAuthData(data.localId, jwt); // Sauvegarde les informations de connexion de l’utilisateur provenant du serveur.
         return this.usersService.save(user, jwt); // Save created user into the database.
       }),
-      tap((user) => this.user.next(user)), // Si l'enregistrement est réussi, met à jour l'état de l'utilisateur authentifié
+      tap((user) => this.user.next(user)), // Si l'enregistrement est réussi, met à jour l'état de l'utilisateur authentifié.
       tap((_) => this.logoutTimer(3600)), // déclenche la minuterie.
-      catchError((error) => this.errorService.handleError(error)), // Si une erreur survient, transmet l'erreur à la méthode handleError() du service d'erreur
-      finalize(() => this.loaderService.setLoading(false)) // Arrête l'affichage du loader, que la requête soit réussie ou non
+      catchError((error) => this.errorService.handleError(error)), // Si une erreur survient, transmet l'erreur à la méthode handleError() du service d'erreur.
+      finalize(() => this.loaderService.setLoading(false)) // Arrête l'affichage du loader, que la requête soit réussie ou non.
     );
   }
 
@@ -79,7 +77,7 @@ export class AuthService {
   @returns Observable qui émet l'utilisateur mis à jour ou une erreur.
   */
   updateUserState(user: User): Observable<User | null> {
-    this.loaderService.setLoading(true);
+    this.loaderService.setLoading(true); // usefull?...
     return this.usersService.update(user).pipe(
       tap((user) => this.user.next(user)),
       tap((_) =>
@@ -92,20 +90,6 @@ export class AuthService {
       finalize(() => this.loaderService.setLoading(false))
     );
   }
-
-  // public updateUserState(user: User): Observable<User|null> {
-  //   this.loaderService.setLoading(true);
-
-  //   return this.usersService.update(user).pipe(
-  //    tap(user => this.user.next(user)),
-  //  tap(_ => this.toastrService.showToastr({
-  //   category: 'success',
-  //   message: 'Vos informations ont été mises à jour !'
-  //  })),
-  //    catchError(error => this.errorService.handleError(error)),
-  //    finalize(() => this.loaderService.setLoading(false))
-  //   );
-  //  }
 
   // Permet de renvoyer la dernière valeur de l’état de l’utilisateur courant != Observable user$ qui renvoit les valeurs en continu à chaque modification de l’utilisateur.
   get currentUser(): User | null {
@@ -139,7 +123,7 @@ export class AuthService {
     this.router.navigate(['app/dashboard']);
   }
 
-  // déclenche la minuterie (inscription & connexion du user)
+  // déclenche la minuterie (inscription & connexion du user).
   private logoutTimer(expirationTime: number): void {
     of(true)
       .pipe(delay(expirationTime * 1000))

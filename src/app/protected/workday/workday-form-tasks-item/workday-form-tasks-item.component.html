@@ -1,9 +1,38 @@
+<!-- Affiche chaque tâche avec un formulaire, un champ de titre et un menu déroulant de priorité -->
 <div [formGroup]="task" class="form-group row">
+
+    <!-- Titre de la tâche en fonction de son importance -->
+    <h5 *ngIf="isFirst"> Tâche la plus importante</h5>
+    <h5 *ngIf="index === 1"> Tâches de seconde importance</h5>
+    <h5 *ngIf="index === 3"> Tâches additionnelles</h5>
+
+    <!-- Numéro de la tâche -->
+    <div class="col-sm-1 align-self-center"> <span>{{ index + 1 }}. </span> </div>
+    <!-- <label class="col-sm-1 col-form-label px-0">{{index + 1}}.</label> -->
+
+    <!-- Champ de titre de la tâche -->
     <div class="col-sm-6 px-0">
         <input formControlName="title" type="text" class="form-control">
     </div>
-    <!-- delete task : on passe l’index de la tâche à supprimer en paramètre pour que le parent saĉhe laquelle il doit retirer de la liste. -->
-    <div *ngIf="isLast && !isFirst" class="col-sm-5 align-self-center">
-        <i (click)="removeTask(index)" class="material-icons md-18 md-grey">clear</i>
+
+    <!-- Menu déroulant de priorité -->
+    <div class="col-sm-5 align-self-center">
+        <div class="btn-group btn-group-sm" dropdown>
+            <!-- Bouton d'ouverture du menu -->
+            <button id="button-basic" dropdownToggle type="button" class="btn btn-default dropdown-toggle"
+                aria-controls="dropdown-basic">
+                {{ task.value.todo }} <span class="caret"></span>
+            </button>
+            <!-- Liste des options du menu déroulant -->
+            <ul id="dropdown-basic" *dropdownMenu class="dropdown-menu" role="menu" aria-labelledby="button-basic">
+                <li *ngFor="let pomodoro of [1,2,3,4,5]" role="menuitem">
+                    <!-- Option de sélection d'un nombre de pomodoros -->
+                    <a class="dropdown-item" (click)="selectTodo(pomodoro)">{{ pomodoro }}</a>
+                </li>
+            </ul>
+            <!-- Retirer la tâche de la liste -->
+            <i *ngIf="isLast && !isFirst" (click)="removeTask(index)" class="material-icons md-18 md-grey">clear</i>
+        </div>
+
     </div>
 </div>

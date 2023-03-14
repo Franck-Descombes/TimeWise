@@ -7,13 +7,13 @@ import { FormGroup } from '@angular/forms';
   styleUrls: ['./workday-form-tasks-item.component.scss']
 })
 export class WorkdayFormTasksItemComponent implements OnInit {
-  // retrieve all properties of entries 
+  // Input properties: used to pass data from the parent component to this component.
   @Input() task: FormGroup;
   @Input() index: number;
   @Input() isFirst: boolean;
   @Input() isLast: boolean;
 
-  // event emitted when user clicks on the cross
+  // Output property: emit an event when user clicks on the cross icon.
   @Output() removedTask = new EventEmitter<number>();
 
   ngOnInit(): void { }
@@ -22,4 +22,12 @@ export class WorkdayFormTasksItemComponent implements OnInit {
   removeTask(index: number) {
     this.removedTask.emit(index);
   }
+
+  // Prend un nombre de pomodoros en paramètre et MAJ cette info dans la propriété todo de la tâche correspondante.
+  selectTodo(todo: number) {
+    // PatchValue -fournie par Angular- permet de mettre à jour seulement certaines propriétés d’un objet.
+    // Contrairement à setValue, qui remplace complètement la valeur du champ FormControl concerné !)
+    this.task.patchValue({todo: todo});
+   }
+
 }

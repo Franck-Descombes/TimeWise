@@ -25,7 +25,7 @@ export class ParametersComponent implements OnInit {
     const user: User | null = this.authService.currentUser;
     if (user) {
       // puis défini une new value (que l’utilisateur a sélectionné depuis le formulaire des paramètres).
-      user.pomodoroDuration = this.parametersForm.get('pomodoro')?.value * 60;
+      user.pomodoroDuration = this.parametersForm.get('pomodoro')?.value * 60; // convert minutes into seconds.
       this.authService.updateUserState(user).subscribe();
     }
   }
