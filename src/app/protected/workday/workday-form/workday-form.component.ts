@@ -13,7 +13,7 @@ import { Workday } from 'src/app/shared/models/workday';
   styles: []
 })
 export class WorkdayFormComponent implements OnInit {
-
+  workdayId: string;
   workdayForm: FormGroup;
 
   constructor(
@@ -23,7 +23,7 @@ export class WorkdayFormComponent implements OnInit {
     private workdaysService: WorkdaysService) { }
 
   ngOnInit() {
-    // Crée le formulaire à l'initialisation du composant
+    this.workdayId = '';
     this.workdayForm = this.createWorkdayForm();
   }
 
@@ -32,7 +32,42 @@ export class WorkdayFormComponent implements OnInit {
   get notes() { return this.workdayForm.get('notes') as FormControl; }
   get tasks() { return this.workdayForm.get('tasks') as FormArray; }
 
-  // Crée le formulaire en utilisant FormBuilder et Validators
+  // Récupère la journée de travail correspondant à une date donnée pour l'utilisateur courant. Le cas échant, remplit le form avec ses valeurs.
+  onDateSelected(displayDate: string): void {
+    const currentUser: User | null = this.authService.currentUser; // Récupère l'utilisateur courant
+
+    if (currentUser && currentUser.id) { // Vérifie si l'utilisateur est authentifié et s'il a un ID
+      this.workdaysService.getWorkdayByDate(displayDate, currentUser.id).subscribe(workday => { // Appelle le service WorkdaysService pour récupérer la journée de travail correspondante
+        this.resetWorkdayForm(); // Réinitialise le formulaire
+
+        if (!workday) return; // Si pas de journée de travail, on arrête là.
+
+        // Récupère l'id de la journée de travail depuis le Firestore. Tant que celle-ci n’a pas été récupéré, son identifiant vaut toujours null.
+        this.workdayId = workday.id as string;
+
+        // Remplit les champs du formulaire avec les valeurs de la journée de travail récupérée
+        this.notes.setValue(workday.notes); // Remplit le champ notes
+        workday.tasks.forEach(task => { // Parcourt la liste des tâches de la journée de travail
+          const taskField: FormGroup = this.fb.group({ // Crée un groupe de champs pour une tâche
+            title: task.title,
+            todo: task.todo,
+            done: task.done
+          });
+          this.tasks.push(taskField); // Ajoute la tâche créée au formulaire
+        });
+      });
+    }
+  }
+
+  // Ici, nous devons utiliser while et pour chaque tâche, nous la retirons grâce à la méthode native removeAt() du FormArray.
+  resetWorkdayForm() {
+    while (this.tasks.length !== 0) {
+      this.tasks.removeAt(0);
+    }
+    this.notes.reset();
+  }
+
+  // Créer formulaire avec FormBuilder et Validators
   createWorkdayForm(): FormGroup {
     const workdayForm: FormGroup = this.fb.group({
       'dueDate': ['', [
@@ -49,20 +84,29 @@ export class WorkdayFormComponent implements OnInit {
     return workdayForm;
   }
 
-  // Soumet le formulaire
-  // utilisateur courant indeterminé = impossibilité de pousser le workday dans Firestore, car nous ignorons à quel utilisateur est associé à la journée de travail en cours.
-  submit(): void {
-    // Récupère l'utilisateur courant
-    const user = this.authService.currentUser;
+  submit(): void { // Détermine si la journée de travail en cours de modification viens du Firestore ou non...
+    const user: User | null = this.authService.currentUser;
 
-    if (user) {
-      // Crée un objet Workday à partir des données du formulaire et de l'ID du current user
-      const workday: Workday = new Workday({ ...this.workdayForm.value, userId: user.id });
-      // Enregistre le Workday et redirige vers la page de planification si réussi, sinon réinitialise le formulaire
-      this.workdaysService.save(workday).subscribe({
+    if (!(user && user.id)) {
+      return;
+    }
+
+    // Si oui : Update workday
+    if (this.workdayId) {
+      const workdayToUpdate: Workday = new Workday({ ...this.workdayForm.value, userId: user.id, id: this.workdayId });
+
+      this.workdaysService.update(workdayToUpdate).subscribe({
         next: () => this.router.navigate(['/app/planning']),
         error: () => this.workdayForm.reset()
       });
+      return;
     }
+
+    // Si non : Create workday
+    const workdayToCreate = new Workday({ ...this.workdayForm.value, userId: user.id });
+    this.workdaysService.save(workdayToCreate).subscribe({
+      next: () => this.router.navigate(['/app/planning']),
+      error: () => this.workdayForm.reset()
+    });
   }
 }

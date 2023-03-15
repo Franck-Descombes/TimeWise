@@ -47,7 +47,31 @@ export class WorkdaysService {
     );
   }
 
-  // récupére une unique journée de travail, correspondant à une date en particulier. Cette date devient en quelque sorte son identifiant unique.
+  // Modifier une journée de travail dans le Firestore
+  update(workday: Workday) {
+    const url = `${environment.firebase.firestore.baseURL}/workdays?key=${environment.firebase.apiKey}`;
+    const data = this.getWorkdayForFirestore(workday);
+    const jwt: string = localStorage.getItem('token')!;
+
+    const httpOptions = {
+      headers: new HttpHeaders({
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${jwt}`
+      })
+    };
+    this.loaderService.setLoading(true);
+
+    return this.http.patch(url, data, httpOptions).pipe(
+      tap(_ => this.toastrService.showToastr({
+        category: 'success',
+        message: 'Votre journée de travail a été sauvegardée avec succès.'
+      })),
+      catchError(error => this.errorService.handleError(error)),
+      finalize(() => this.loaderService.setLoading(false))
+    );
+  }
+
+  // récupére une journée de travail correspondant à une date en particulier. Cette date devient en quelque sorte son identifiant unique.
   getWorkdayByDate(date: string, userId: string): Observable<Workday | null> {
     const url = `${environment.firebase.firestore.baseURL}:runQuery?key=${environment.firebase.apiKey}`;
     const data = this.getSructuredQuery(date, userId);
@@ -96,7 +120,7 @@ export class WorkdaysService {
     });
   }
 
-  // fournir les informations nécessaires à notre requête pour le Firestore
+  // Fournit les informations nécessaires à notre requête pour le Firestore
   private getSructuredQuery(date: string, userId: string): any {
     return {
       'structuredQuery': {
