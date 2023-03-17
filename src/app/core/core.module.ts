@@ -10,6 +10,8 @@ import { NavbarComponent } from './components/navbar/navbar.component';
 import { PageNotFoundComponent } from './components/page-not-found/page-not-found.component';
 import { ToastrComponent } from './components/toastr/toastr.component';
 import { HttpClientModule } from '@angular/common/http';
+import { HTTP_INTERCEPTORS } from '@angular/common/http';
+import { AuthInterceptor } from './interceptors/auth.interceptor';
 
 // Les importations
 @NgModule({
@@ -34,6 +36,13 @@ import { HttpClientModule } from '@angular/common/http';
     PageNotFoundComponent,
     LoaderComponent,
     ToastrComponent
+  ],
+  providers: [
+    {
+      provide: HTTP_INTERCEPTORS,
+      useClass: AuthInterceptor,
+      multi: true
+    }
   ]
 })
 export class CoreModule {

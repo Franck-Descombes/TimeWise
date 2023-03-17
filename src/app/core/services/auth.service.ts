@@ -41,16 +41,13 @@ export class AuthService {
     const url = `${environment.firebase.auth.baseURL}/signupNewUser?key=${environment.firebase.apiKey}`; // URL de l'API Firebase pour l'enregistrement d'un nouvel utilisateur.
     const data = { email: email, password: password, returnSecureToken: true }; // data user
 
-    const httpOptions = {
-      // Options HTTP pour l'en-tête de la requête
-      headers: new HttpHeaders({ 'Content-Type': 'application/json' }),
-    };
+    const httpOptions = {};
 
     // Affiche le loader pendant l'envoi de la requête HTTP.
     this.loaderService.setLoading(true);
 
     // Envoie la requête HTTP POST au backend pour créer un nouvel utilisateur avec l'API Firebase.
-    return this.http.post(url, data, httpOptions).pipe(
+    return this.http.post(url, data, {}).pipe(
       // Si la requête est réussie, enregistre l'utilisateur dans la base de données Firestore et renvoie un Observable qui émet l'utilisateur créé.
       switchMap((data: any) => {
         // Extrait le jeton JWT de la réponse HTTP
@@ -99,12 +96,10 @@ export class AuthService {
   public login(email: string, password: string): Observable<User | null> {
     const url = `${environment.firebase.auth.baseURL}/verifyPassword?key=${environment.firebase.apiKey}`;
     const data = { email: email, password: password, returnSecureToken: true };
-    const httpOptions = {
-      headers: new HttpHeaders({ 'Content-Type': 'application/json' }),
-    };
+    const httpOptions = {};
     this.loaderService.setLoading(true); // set loader to true.
 
-    return this.http.post<User>(url, data, httpOptions).pipe(
+    return this.http.post<User>(url, data, {}).pipe(
       switchMap((data: any) => {
         const userId: string = data.localId;
         const jwt: string = data.idToken;

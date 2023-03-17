@@ -31,7 +31,6 @@ export class WorkdaysService {
 
     const httpOptions = {
       headers: new HttpHeaders({
-        'Content-Type': 'application/json',
         'Authorization': `Bearer ${jwt}`
       })
     };
@@ -55,7 +54,6 @@ export class WorkdaysService {
 
     const httpOptions = {
       headers: new HttpHeaders({
-        'Content-Type': 'application/json',
         'Authorization': `Bearer ${jwt}`
       })
     };
@@ -71,6 +69,25 @@ export class WorkdaysService {
     );
   }
 
+  remove(workday: Workday) {
+    const url = `${environment.firebase.firestore.baseURL}/workdays/${workday.id}?key=${environment.firebase.apiKey}`;
+    const jwt: string = localStorage.getItem('token')!;
+    const httpOptions = {
+      headers: new HttpHeaders({
+        'Authorization': `Bearer ${jwt}`
+      })
+    };
+
+    return this.http.delete(url, httpOptions).pipe(
+      tap(_ => this.toastrService.showToastr({
+        category: 'success',
+        message: 'Votre journée de travail a été supprimé avec succès.'
+      })),
+      catchError(error => this.errorService.handleError(error)),
+      finalize(() => this.loaderService.setLoading(false))
+    );
+  }
+
   // récupére une journée de travail correspondant à une date en particulier. Cette date devient en quelque sorte son identifiant unique.
   getWorkdayByDate(date: string, userId: string): Observable<Workday | null> {
     const url = `${environment.firebase.firestore.baseURL}:runQuery?key=${environment.firebase.apiKey}`;
@@ -79,7 +96,6 @@ export class WorkdaysService {
 
     const httpOptions = {
       headers: new HttpHeaders({
-        'Content-Type': 'application/json',
         'Authorization': `Bearer ${jwt}`
       })
     };
@@ -94,6 +110,68 @@ export class WorkdaysService {
       })
     );
   }
+
+  /* Récupère toutes les journées de travail d'un utilisateur donné à partir de Firestore.
+   * @param userId L'identifiant de l'utilisateur pour lequel récupérer les journées de travail.
+   * @returns Un Observable émettant un tableau de toutes les journées de travail de l'utilisateur.
+   * @throws Une erreur si la requête échoue ou si les données reçues de Firestore ne sont pas valides.
+   */
+  getWorkdayByUser(userId: string): Observable<Workday[]> {
+    // Définit l'URL et les données pour la requête Firestore.
+    const url = `${environment.firebase.firestore.baseURL}:runQuery?key=${environment.firebase.apiKey}`;
+    const data = this.getWorkdayByUserQuery(userId);
+
+    // Ajoute le jeton d'authentification à l'en-tête de la requête.
+    const jwt: string = localStorage.getItem('token')!;
+    const httpOptions = {
+      headers: new HttpHeaders({
+        'Authorization': `Bearer ${jwt}`
+      })
+    };
+
+    // Effectue la requête Firestore et transforme les données reçues en un tableau de journées de travail.
+    return this.http.post(url, data, httpOptions).pipe(
+      switchMap((workdaysData: any) => {
+        const workdays: Workday[] = [];
+        workdaysData.forEach((data: any) => {
+          if (data && data.document) {
+            const workday: Workday = this.getWorkdayFromFirestore(data.document.name, data.document.fields);
+            workdays.push(workday);
+          }
+        });
+        return of(workdays);
+      }),
+      catchError(error => this.errorService.handleError(error))
+    );
+  }
+
+  // retourne une requête structurée pour récupérer tous les jours de travail d'un utilisateur donné
+  getWorkdayByUserQuery(userId: string) {
+    return {
+      'structuredQuery': {
+        // Définit la collection à partir de laquelle récupérer les jours de travail
+        'from': [{
+          'collectionId': 'workdays'
+        }],
+        // Définit le filtre pour récupérer seulement les jours de travail de l'utilisateur spécifié
+        'where': {
+          'fieldFilter': {
+            'field': { 'fieldPath': 'userId' },
+            'op': 'EQUAL',
+            'value': { 'stringValue': userId }
+          }
+        },
+        // Définit l'ordre de tri pour les jours de travail récupérés
+        "orderBy": [{
+          "field": {
+            "fieldPath": "dueDate"
+          },
+          "direction": "DESCENDING"
+        }]
+      }
+    };
+  }
+
 
   // récupére les données brutes stockées dans le Firestore pour en faire un modèle métier.
   private getWorkdayFromFirestore(name: string, fields: any): Workday {

@@ -1,11 +1,12 @@
 import { Component, OnInit } from '@angular/core';
 import { FormGroup, FormArray, FormBuilder, FormControl } from '@angular/forms'; // FormArray permet de regrouper des champs de formulaire sans avoir à déterminer le nombre à l'avance.
 import { Validators } from '@angular/forms';
-import { Router } from '@angular/router';
+import { Router, ActivatedRoute } from '@angular/router';
 import { AuthService } from 'src/app/core/services/auth.service';
 import { WorkdaysService } from 'src/app/core/services/workdays.service';
 import { User } from 'src/app/shared/models/user';
 import { Workday } from 'src/app/shared/models/workday';
+
 
 @Component({
   selector: 'al-workday-form',
@@ -20,11 +21,18 @@ export class WorkdayFormComponent implements OnInit {
     private fb: FormBuilder,
     private router: Router,
     private authService: AuthService,
-    private workdaysService: WorkdaysService) { }
+    private workdaysService: WorkdaysService,
+    private route: ActivatedRoute) { }
 
   ngOnInit() {
-    this.workdayId = '';
-    this.workdayForm = this.createWorkdayForm();
+    this.route.queryParams.subscribe(params => {
+      this.workdayId = '';
+      this.workdayForm = this.createWorkdayForm();
+      if (params['date']) {
+        const date: Date = new Date(+params['date'] * 1000); // x1000 le timestamp reçu pour l'adapter au format des timestamp de JS.
+        this.dueDate.setValue(date);
+      }
+    });
   }
 
   // Raccourcis pour accéder à des éléments du formulaire

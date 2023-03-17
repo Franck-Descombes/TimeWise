@@ -1,6 +1,9 @@
 import { Component, OnInit } from '@angular/core';
-import { Observable, of } from "rxjs"; // 'of' : créer un Observable à partir d’une variable quelcqonque.
-import { delay } from "rxjs/operators"; // 'delay' permet de différer la diffusion d’une valeur au sein d'un flux.
+import { AuthService } from 'src/app/core/services/auth.service';
+import { WorkdaysService } from 'src/app/core/services/workdays.service';
+import { User } from 'src/app/shared/models/user';
+import { Observable } from 'rxjs';
+import { Workday } from 'src/app/shared/models/workday';
 
 @Component({
   selector: 'al-planning-workday-list',
@@ -10,30 +13,30 @@ import { delay } from "rxjs/operators"; // 'delay' permet de différer la diffus
 })
 export class PlanningWorkdayListComponent implements OnInit {
 
-  // Observable (propriété) convention => '$' 
-  workdays: { dueDate: string, doneTasks: number, remainingTasks: number }[];
-  workdays$: Observable<{ dueDate: string, doneTasks: number, remainingTasks: number }[]>;
+  workdays: Workday[]; // get workdays of a current user in a Tab.
 
-  constructor() { }
+  constructor(
+    private authService: AuthService,
+    private workdayService: WorkdaysService) { }
 
   ngOnInit() {
-    //  Tab 'workdays' contenant la liste des journées de travail initialement prévues.
-    this.workdays = [
-      { dueDate: 'Lundi', doneTasks: 2, remainingTasks: 3 },
-      { dueDate: 'Mardi', doneTasks: 0, remainingTasks: 2 },
-      { dueDate: 'Mercredi', doneTasks: 0, remainingTasks: 1 }
-    ];
-
-    // génère un flux contenant toutes les journées de travail déclarées au-dessus.
-    this.workdays$ = of(this.workdays).pipe(delay(1000));
+    const user: User | null = this.authService.currentUser;
+    if (user && user.id) {
+      this.workdayService.getWorkdayByUser(user.id).subscribe((workdays: Workday[]) => this.workdays = workdays);
+    }
   }
 
-  /* le composant parent lie la méthode onWorkdayRemoved (chargée de gérer des événements) avec les valeurs émises par le composant fils.
-  Angular passe automatiquement l’argument $event à la méthode de gestionnaire d’événement. Ce paramètre $event contient la valeur émise par le composant fils.*/
-  onWorkdayRemoved(dueDate: string) {
-    this.workdays = this.workdays.filter(workday =>
-      !dueDate.includes(workday.dueDate)
-    );
-    this.workdays$ = of(this.workdays);
+  // MAJ des workdays à afficher, en retirant celle qui a été supprimée côté Firestore.
+  // Pour cela, on attribue à la propriété workdays un nouveau tableau, contenant les mêmes workdays sans celle que l’on vient de supprimer. 
+  onWorkdayRemoved(workday: Workday) {
+    this.workdayService.remove(workday)
+      .subscribe(_ => this.workdays = this.workdays.filter(el => el.id !== workday.id))
   }
+  // // OLD VERSION
+  // onWorkdayRemoved(workday: Workday) {
+  //   this.workdayService.remove(workday)
+  //   .subscribe(_ => {
+  //    console.log(`${workday.id} has been removed from Firestore !`);
+  //   })
+  //  }
 }

@@ -23,7 +23,6 @@ export class UsersService {
     const data = this.getDataForFirestore(user);
     const httpOptions = {
       headers: new HttpHeaders({
-        'Content-Type': 'application/json',
         Authorization: `Bearer ${jwt}` // Envoie le JWT reçu au backend.
       }),
     };
@@ -42,7 +41,6 @@ export class UsersService {
     const data = this.getStructuredQuery(userId); // Crée un objet structuré pour la requête Firestore (convertit l'id du user en un objet JSON).
     const httpOptions = {
       headers: new HttpHeaders({
-        'Content-Type': 'application/json',
         Authorization: `Bearer ${jwt}`,
       }),
     };
@@ -62,7 +60,6 @@ export class UsersService {
     const data = this.getDataForFirestore(user); // Body request
     const httpOptions = {
       headers: new HttpHeaders({
-        'Content-Type': 'application/json',
         Authorization: `Bearer ${localStorage.getItem('token')}`, // get JWT from localstorage.
       }),
     };

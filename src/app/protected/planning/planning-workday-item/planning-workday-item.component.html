@@ -1,12 +1,19 @@
-<!-- logique d'affichage d'un workday : on se contente d’afficher un bloc par workday -->
-<div class="card border-light mt-3">
+<!-- logique d'affichage d'un workday : on se contente d’afficher un bloc par workday 
+on ajoute la classe flex-fill à la première ligne ci-dessous, on détail la journée de travail plutôt que juste le pipe json.
+Puis on construit véritablement notre interface grâce à la directive NgFor et à l’interpolation de la propriété notes.-->
+
+<div class="card border-light mt-3 flex-fill">
     <div class="card-header">
-        {{ dueDate }}
-        <i class="material-icons md-grey float-end"
-        (click)="removeWorkday(dueDate)">close</i>
+        {{ workday.displayDate }}
+        <i class="material-icons md-grey float-end" (click)="removeWorkday(workday)">close</i>
     </div>
-    <div class="card-body">
-     <p>Tâches restantes : <strong>{{ remainingTasks }}</strong></p>
-     <p>Tâches effectuées : <strong>{{ doneTasks }}</strong></p>
-     </div>
-   </div>
+    <div class="card-body" (click)="goWorkday(workday)">
+        <div *ngFor="let task of workday.tasks" class="mb-2">
+          <h4 *ngIf="task.completed"><i class="material-icons align-bottom mr-1">done_outline</i> {{ task.title }}</h4>
+          <h4 *ngIf="!task.completed"><i class="material-icons align-bottom mr-1">layers_clear</i> {{ task.title }}</h4>
+          <p *ngIf="!task.completed">Status: {{ task.done}}/{{task.todo }}</p>
+        </div>
+        <hr>
+        <p>{{ workday.notes }}</p>    
+      </div>
+    </div>
