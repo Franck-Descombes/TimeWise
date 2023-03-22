@@ -1,5 +1,10 @@
 import { Component, OnInit } from '@angular/core';
 import { DateService } from 'src/app/core/services/date.service';
+import { User } from 'src/app/shared/models/user';
+import { Workday } from 'src/app/shared/models/workday';
+import { AuthService } from 'src/app/core/services/auth.service';
+import { WorkdaysService } from 'src/app/core/services/workdays.service';
+import { Observable } from 'rxjs';
 
 @Component({
   selector: 'al-dashboard',
@@ -10,10 +15,19 @@ import { DateService } from 'src/app/core/services/date.service';
 export class DashboardComponent implements OnInit {
 
   currentDate: string; // sauvegarde la date formatée
+  currentUser: User | null;
+  workday$: Observable<Workday | null>;
 
-  constructor(private dateService: DateService) { }
+  constructor(
+    private authService: AuthService,
+    private workdaysService: WorkdaysService,
+    private dateService: DateService) { }
 
   ngOnInit(): void {
-    this.currentDate = this.dateService.getDisplayDate(new Date());
+    this.currentDate = this.dateService.getDisplayDate(new Date()); // get current date
+    this.currentUser = this.authService.currentUser; // get current user from auth service
+    if (this.currentUser && this.currentUser.id) { // on se sert du service WorkdayService pour obtenir la liste des tâches associées.
+      this.workday$ = this.workdaysService.getWorkdayByDate(this.currentDate, this.currentUser.id);
+    }
   }
 }

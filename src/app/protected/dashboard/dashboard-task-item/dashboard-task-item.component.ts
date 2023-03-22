@@ -1,4 +1,6 @@
-import { Component } from '@angular/core';
+// Ce composant est chargé d’afficher une tâche en particulier
+import { Component, Input } from '@angular/core';
+import { Task } from 'src/app/shared/models/task';
 
 @Component({
   selector: 'al-dashboard-task-item',
@@ -6,5 +8,5 @@ import { Component } from '@angular/core';
   styleUrls: ['./dashboard-task-item.component.scss']
 })
 export class DashboardTaskItemComponent {
-
+  @Input() task: Task;
 }

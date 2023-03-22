@@ -13,6 +13,7 @@ BsDatepickerModule : Permet de sélectionner facilement une date au sein d’un 
 BsDropdownModule : Permet d’implémenter rapidement des menus déroulants.
 ModalModule : Ce module s’occupe de gérer des boîtes modales dans votre application.
 PopoverModule : Permet d’afficher une petite bulle superposée sur la page.
+ProgressbarModule : Affiche une barre de progression des pomodoros sur le tableau de bord.
 Tous ces modules sont donc disponibles dans le SharedModule, mais pas ailleurs dans notre projet, car le SharedModule ne les réexporte pas dans l’ensemble de l’application !
 */
 
@@ -25,7 +26,7 @@ Tous ces modules sont donc disponibles dans le SharedModule, mais pas ailleurs d
     BsDropdownModule.forRoot(),
     ModalModule.forRoot(),
     PopoverModule.forRoot(),
-    ProgressbarModule.forRoot(),
+    ProgressbarModule.forRoot()
   ],
   exports: [
     AlertModule,
