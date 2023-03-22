@@ -1,9 +1,9 @@
 import { Component, OnInit } from '@angular/core';
 import { FormGroup, FormArray, FormBuilder, FormControl } from '@angular/forms'; // FormArray permet de regrouper des champs de formulaire sans avoir à déterminer le nombre à l'avance.
 import { Validators } from '@angular/forms';
+import { WorkdaysService } from 'src/app/core/services/workdays.service';
 import { Router, ActivatedRoute } from '@angular/router';
 import { AuthService } from 'src/app/core/services/auth.service';
-import { WorkdaysService } from 'src/app/core/services/workdays.service';
 import { User } from 'src/app/shared/models/user';
 import { Workday } from 'src/app/shared/models/workday';
 
@@ -42,7 +42,7 @@ export class WorkdayFormComponent implements OnInit {
 
   // Récupère la journée de travail correspondant à une date donnée pour l'utilisateur courant. Le cas échant, remplit le form avec ses valeurs.
   onDateSelected(displayDate: string): void {
-    const currentUser: User | null = this.authService.currentUser; // Récupère l'utilisateur courant
+    const currentUser: User | null = this.authService.currentUser; // get current user
 
     if (currentUser && currentUser.id) { // Vérifie si l'utilisateur est authentifié et s'il a un ID
       this.workdaysService.getWorkdayByDate(displayDate, currentUser.id).subscribe(workday => { // Appelle le service WorkdaysService pour récupérer la journée de travail correspondante
@@ -51,8 +51,7 @@ export class WorkdayFormComponent implements OnInit {
         if (!workday) return; // Si pas de journée de travail, on arrête là.
 
         // Récupère l'id de la journée de travail depuis le Firestore. Tant que celle-ci n’a pas été récupéré, son identifiant vaut toujours null.
-        this.workdayId = workday.id as string;
-
+        this.workdayId = workday.id as string
         // Remplit les champs du formulaire avec les valeurs de la journée de travail récupérée
         this.notes.setValue(workday.notes); // Remplit le champ notes
         workday.tasks.forEach(task => { // Parcourt la liste des tâches de la journée de travail

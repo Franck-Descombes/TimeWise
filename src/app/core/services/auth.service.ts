@@ -58,7 +58,7 @@ export class AuthService {
           name: name,
         });
         this.saveAuthData(data.localId, jwt); // Sauvegarde les informations de connexion de l’utilisateur provenant du serveur.
-        return this.usersService.save(user, jwt); // Save created user into the database.
+        return this.usersService.save(user); // Save created user into the database.
       }),
       tap((user) => this.user.next(user)), // Si l'enregistrement est réussi, met à jour l'état de l'utilisateur authentifié.
       tap((_) => this.logoutTimer(3600)), // déclenche la minuterie.
@@ -69,12 +69,12 @@ export class AuthService {
 
   /**
    * Met à jour l'état global de l'application avec les informations de l'utilisateur.
-   C'est cette méthode qui appelle la méthode update du service UsersService, qui elle fait la requête au backend Firestore.
+   Cette méthode appelle la méthode update() du service UsersService, qui elle fait la requête au backend Firestore.
   @param user Objet User représentant l'utilisateur.
   @returns Observable qui émet l'utilisateur mis à jour ou une erreur.
   */
   updateUserState(user: User): Observable<User | null> {
-    this.loaderService.setLoading(true); // usefull?...
+    this.loaderService.setLoading(true); //? to delete?...
     return this.usersService.update(user).pipe(
       tap((user) => this.user.next(user)),
       tap((_) =>
@@ -88,7 +88,7 @@ export class AuthService {
     );
   }
 
-  // Permet de renvoyer la dernière valeur de l’état de l’utilisateur courant != Observable user$ qui renvoit les valeurs en continu à chaque modification de l’utilisateur.
+  // Retourne la dernière valeur de l’état de l’utilisateur courant. (!= Observable user$ qui renvoit les valeurs en continu à chaque modification de l’utilisateur).
   get currentUser(): User | null {
     return this.user.getValue();
   }
@@ -104,7 +104,7 @@ export class AuthService {
         const userId: string = data.localId;
         const jwt: string = data.idToken;
         this.saveAuthData(data.localId, jwt); // sauvegarde des informations de connexion de l'utilisateur.
-        return this.usersService.get(userId, jwt);
+        return this.usersService.get(userId);
       }),
       tap((user) => this.user.next(user)), // Update service status.
       tap((_) => this.logoutTimer(3600)), // déclenche la minuterie.

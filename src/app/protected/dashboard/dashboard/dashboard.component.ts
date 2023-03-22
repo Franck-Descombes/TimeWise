@@ -1,4 +1,5 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
+import { DateService } from 'src/app/core/services/date.service';
 
 @Component({
   selector: 'al-dashboard',
@@ -6,6 +7,13 @@ import { Component } from '@angular/core';
   styles: [
   ]
 })
-export class DashboardComponent {
+export class DashboardComponent implements OnInit {
 
+  currentDate: string; // sauvegarde la date formatée
+
+  constructor(private dateService: DateService) { }
+
+  ngOnInit(): void {
+    this.currentDate = this.dateService.getDisplayDate(new Date());
+  }
 }

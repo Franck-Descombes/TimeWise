@@ -5,6 +5,7 @@ import { BsDatepickerModule } from 'ngx-bootstrap/datepicker';
 import { BsDropdownModule } from 'ngx-bootstrap/dropdown';
 import { ModalModule } from 'ngx-bootstrap/modal';
 import { PopoverModule } from 'ngx-bootstrap/popover';
+import { ProgressbarModule } from 'ngx-bootstrap/progressbar';
 
 /* Série de modules (from NgxBootstrap) importés au même endroit, nous les réexportons ensuite :
 AlertModule : Permet d’afficher des messages de confirmation, d’avertissement ou d’erreur à l’utilisateur, en fonction de ses interactions avec l’application.
@@ -23,14 +24,16 @@ Tous ces modules sont donc disponibles dans le SharedModule, mais pas ailleurs d
     BsDatepickerModule.forRoot(),
     BsDropdownModule.forRoot(),
     ModalModule.forRoot(),
-    PopoverModule.forRoot()
+    PopoverModule.forRoot(),
+    ProgressbarModule.forRoot(),
   ],
   exports: [
     AlertModule,
     BsDatepickerModule,
     BsDropdownModule,
     ModalModule,
-    PopoverModule
+    PopoverModule,
+    ProgressbarModule
   ]
 })
 export class NgxBootstrapModule { }
