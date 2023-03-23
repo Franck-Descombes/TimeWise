@@ -1,32 +1,17 @@
+<!-- Vérifie si l’utilisateur a prévu des tâches pour la journée en cours ou non. Si non, il s’adresse aux composants fils : -->
 <h1>
-    Tableau De Bord
-    <small class="text-muted"> - {{ currentDate }}</small>
+  Tableau de bord 
+  <small class="text-muted"> - {{ currentDate }}</small>
 </h1>
-
-<al-dashboard-pomodoro-progress></al-dashboard-pomodoro-progress>
-
  
-<!-- Start button. (on pourrait découper les boutons de contrôle dans un composant à part).-->
-<div class="text-center my-3">
-    <button class="btn btn-success btn-sm">
-      Démarrer le Pomodoro
-    </button>
-  </div>
-   
-  <!-- Cancel et Stop butttons -->
-  <div class="text-center my-3">
-    <button class="btn btn-sm mr-1">
-      Annuler le Pomodoro
-    </button>
-    <button class="btn btn-success btn-sm">
-      Terminé le Pomodoro
-    </button>
-  </div>
-   
-  <!-- Display tasks list-->
-  <div *ngIf="(workday$ | async) as workday">
-    <al-dashboard-task-item
-      *ngFor="let task of workday.tasks"
-      [task]="task">
-    </al-dashboard-task-item>
-  </div>
+<!-- On vérifie si l'utilisateur a prévu des tâches ou non : -->
+<al-dashboard-workday
+  *ngIf="(workday$ | async) as workday; else emptyWorkday"
+  [workday]="workday">
+</al-dashboard-workday>
+ 
+<ng-template #emptyWorkday>
+  <p class="text-center lead m-5">
+    {{ currentUser?.name }}, pas de travail pour aujourd'hui ! <img draggable="false" role="img" class="emoji" alt="" src="https://s.w.org/images/core/emoji/14.0.0/svg/1f334.svg">
+  </p>
+</ng-template>

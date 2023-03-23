@@ -1,1 +1,25 @@
-<p>dashboard-workday works!</p>
+<!-- Ce template contient toutes les éléments nécessaires pour afficher une journée de travail à l'utilisateur.-->
+<al-dashboard-pomodoro-progress>
+</al-dashboard-pomodoro-progress>
+ 
+<div *ngIf="!isPomodoroActive" class="text-center my-3">
+  <button (click)="startPomodoro()" class="btn btn-success btn-sm">
+    Démarrer le Pomodoro
+  </button>
+</div>
+ 
+<div *ngIf="isPomodoroActive" class="text-center my-3">
+  <button (click)="cancelPomodoro()" class="btn btn-sm mr-1">
+    Annuler le Pomodoro
+  </button>
+  <button (click)="completePomodoro()" class="btn btn-success btn-sm">
+    Terminé le Pomodoro
+  </button>
+</div>
+ 
+<div>
+  <al-dashboard-task-item
+    *ngFor="let task of workday.tasks"
+    [task]="task">
+  </al-dashboard-task-item>
+</div>
