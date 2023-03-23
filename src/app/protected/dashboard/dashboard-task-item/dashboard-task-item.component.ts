@@ -8,5 +8,5 @@ import { Task } from 'src/app/shared/models/task';
   styleUrls: ['./dashboard-task-item.component.scss']
 })
 export class DashboardTaskItemComponent {
-  @Input() task: Task;
+  @Input() task: Task; // simple input property
 }

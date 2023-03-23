@@ -6,14 +6,14 @@
 <al-dashboard-pomodoro-progress></al-dashboard-pomodoro-progress>
 
  
-<!-- J'ai ajouté un premier bouton de commande... On pourrait découper les boutons de contrôle dans un composant à part.-->
+<!-- Start button. (on pourrait découper les boutons de contrôle dans un composant à part).-->
 <div class="text-center my-3">
     <button class="btn btn-success btn-sm">
       Démarrer le Pomodoro
     </button>
   </div>
    
-  <!-- ... ainsi que les boutons des commandes suivants: -->
+  <!-- Cancel et Stop butttons -->
   <div class="text-center my-3">
     <button class="btn btn-sm mr-1">
       Annuler le Pomodoro
@@ -23,7 +23,7 @@
     </button>
   </div>
    
-  <!-- Et enfin on affiche la liste des tâches ! -->
+  <!-- Display tasks list-->
   <div *ngIf="(workday$ | async) as workday">
     <al-dashboard-task-item
       *ngFor="let task of workday.tasks"

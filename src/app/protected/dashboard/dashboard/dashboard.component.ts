@@ -26,8 +26,8 @@ export class DashboardComponent implements OnInit {
   ngOnInit(): void {
     this.currentDate = this.dateService.getDisplayDate(new Date()); // get current date
     this.currentUser = this.authService.currentUser; // get current user from auth service
-    if (this.currentUser && this.currentUser.id) { // on se sert du service WorkdayService pour obtenir la liste des tâches associées.
-      this.workday$ = this.workdaysService.getWorkdayByDate(this.currentDate, this.currentUser.id);
+    if (this.currentUser && this.currentUser.id) {
+      this.workday$ = this.workdaysService.getWorkdayByDate(this.currentDate, this.currentUser.id);// use WorkdayService to get list of tasks associated.
     }
   }
 }
