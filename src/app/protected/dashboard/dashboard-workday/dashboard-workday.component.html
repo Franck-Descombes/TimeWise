@@ -1,5 +1,10 @@
 <!-- Ce template contient toutes les éléments nécessaires pour afficher une journée de travail à l'utilisateur.-->
-<al-dashboard-pomodoro-progress>
+
+<!--  On passe les valeurs des propriétés currentProgress et maxProgress à la barre de progression enfant -->
+<al-dashboard-pomodoro-progress
+  *ngIf="isPomodoroActive"
+  [progress]="currentProgress"
+  [maxProgress]="maxProgress">
 </al-dashboard-pomodoro-progress>
  
 <div *ngIf="!isPomodoroActive" class="text-center my-3">
