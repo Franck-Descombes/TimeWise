@@ -1,4 +1,4 @@
-// Ce service d'authentification est responsable de la récupération des jetons JWT et de la vérification de la connexion de l'utilisateur courant.
+// Service d'authentification responsable de récupérer les jetons JWT et de vérifier la connexion de l'utilisateur courant.
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Router } from '@angular/router';

@@ -3,7 +3,10 @@
 <!-- Si l’utilisateur n’a pas terminé sa journée de travail, alors on conserve l’affichage en l’état. -->
 <div *ngIf="!isWorkdayComplete">
   <!--  On passe les valeurs des propriétés currentProgress et maxProgress à la barre de progression enfant -->
-  <al-dashboard-pomodoro-progress *ngIf="isPomodoroActive" [progress]="currentProgress" [maxProgress]="maxProgress">
+  <al-dashboard-pomodoro-progress
+    *ngIf="isPomodoroActive"
+    [progress]="currentProgress"
+    [maxProgress]="maxProgress">
   </al-dashboard-pomodoro-progress>
 
   <div *ngIf="!isPomodoroActive" class="text-center my-3">
@@ -17,12 +20,14 @@
       Annuler le Pomodoro
     </button>
     <button (click)="completePomodoro()" class="btn btn-success btn-sm">
-      Terminé le Pomodoro
+      Terminer le Pomodoro
     </button>
   </div>
 
   <div>
-    <al-dashboard-task-item *ngFor="let task of workday.tasks" [task]="task">
+    <al-dashboard-task-item
+      *ngFor="let task of workday.tasks"
+      [task]="task">
     </al-dashboard-task-item>
   </div>
 </div>

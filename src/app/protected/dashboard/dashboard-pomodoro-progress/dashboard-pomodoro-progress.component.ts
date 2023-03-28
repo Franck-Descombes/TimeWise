@@ -10,7 +10,7 @@ export class DashboardPomodoroProgressComponent implements OnInit {
   currentProgress: number;
   percentage: number;
   
-  // récupère les propriétés d’entrée transmis par le composant parent (DashboardWorkdayComponent)
+  // récupère les propriétés d’entrée (currentProgress & maxProgress) transmises par le composant parent (DashboardWorkdayComponent)
   @Input()
   set progress(progress: number) {
    this.currentProgress = progress;
