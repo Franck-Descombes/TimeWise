@@ -1,12 +1,14 @@
 # TimeWise
 
-TimeWise is a simple and effective web app designed to help you manage your tasks and increase productivity using the Pomodoro technique. With TimeWise, you can break down your work into manageable intervals, called "Pomodoros" and track your progress towards completing your tasks.
+TimeWise is a simple and effective web app designed to help you manage your tasks and increase productivity using the Pomodoro technique.
+With TimeWise, you can break down your work into manageable intervals, called "Pomodoros" and track your progress towards completing your tasks.
 
 Features:
 
 Pomodoro timer: Start a Pomodoro timer with a single click, and stay focused for a customizable time between 15 and 60 minutes without interruptions.
 Task management: Organize your tasks into projects and easily keep track of your progress.
 Time tracking: Track the time you spend on each task, and get insights into your productivity over time.
+
 Easy to use: The app is simple and intuitive, making it easy to use for anyone who wants to manage their tasks more efficiently and get more done in less time.
 
 TimeWise is perfect for freelancers, students, entrepreneurs, and anyone who wants to stay focused and productive. Try it out today and start getting things done!
